@@ -1,7 +1,7 @@
 UVAID1=10551832
 UVAID2=10617558
 UVAID=$(UVAID1)-$(UVAID2)
-PROGNAME=modsim_1
+PROGNAME=modsim1
 
 MKDIR=mkdir
 PACK=tar -jcvf
@@ -10,19 +10,23 @@ CFLAGS=-Wall -Wextra -O1 -pedantic -std=c99
 LDFLAGS=-lm
 CP=cp
 RM=rm -rf
-OFILES=$(subst .c,.o,$(wildcard *.c))
 
-$(PROGNAME): $(OFILES)
-	$(CC) $(CFLAGS) $(OFILES) -o $(PROGNAME) $(LDFLAGS)
+all: floatrep numdif root2 newrap
 
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+floatrep:
+	$(CC) $(CFLAGS) floatrep.c $(LDLAGS)
 
-run: $(PROGNAME)
-	./$(PROGNAME)
+numdif:
+	$(CC) $(CFLAGS) numdif.c $(LDLAGS)
+
+root2:
+	$(CC) $(CFLAGS) root2.c $(LDLAGS)
+
+newrap:
+	$(CC) $(CFLAGS) newrap.c $(LDLAGS)
 
 clean:
-	$(RM) *.o $(PROGNAME) $(PROGNAME)-$(UVAID).tbz
+	$(RM) *.o  $(PROGNAME)-$(UVAID).tbz
 
 tarball: $(PROGNAME)
 	$(MAKE) clean

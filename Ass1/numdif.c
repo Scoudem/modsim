@@ -4,3 +4,9 @@
  *          Tristan van Vaalen - 10551832
  * Comments: 
  */
+
+int
+main(int argc, char* argv[])
+{
+
+}

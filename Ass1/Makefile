@@ -15,16 +15,16 @@ RM=rm -rf
 all: floatrep numdif root2 newrap
 
 floatrep:
-	$(CC) $(CFLAGS) floatrep.c $(LDLAGS)
+	$(CC) $(CFLAGS) -o floatrep floatrep.c $(LDLAGS)
 
 numdif:
-	$(CC) $(CFLAGS) numdif.c $(LDLAGS)
+	$(CC) $(CFLAGS) -o numdif  numdif.c $(LDLAGS)
 
 root2:
-	$(CC) $(CFLAGS) root2.c $(LDLAGS)
+	$(CC) $(CFLAGS) -o root2  root2.c $(LDLAGS)
 
 newrap:
-	$(CC) $(CFLAGS) newrap.c $(LDLAGS)
+	$(CC) $(CFLAGS) -o newrap  newrap.c $(LDLAGS)
 
 clean:
 	$(RM) *.o  $(PROGNAME)-$(UVAID).tbz

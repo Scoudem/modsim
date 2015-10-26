@@ -14,16 +14,16 @@ RM=rm -rf
 
 all: floatrep numdif root2 newrap
 
-floatrep:
+floatrep: floatrep.c
 	$(CC) $(CFLAGS) -o floatrep floatrep.c $(LDLAGS)
 
-numdif:
+numdif: numdif.c
 	$(CC) $(CFLAGS) -o numdif  numdif.c $(LDLAGS)
 
-root2:
+root2: root2.c
 	$(CC) $(CFLAGS) -o root2  root2.c $(LDLAGS)
 
-newrap:
+newrap: newrap.c
 	$(CC) $(CFLAGS) -o newrap  newrap.c $(LDLAGS)
 
 clean:

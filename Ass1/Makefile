@@ -28,6 +28,7 @@ newrap:
 
 clean:
 	$(RM) *.o  $(PROGNAME)-$(UVAID).tbz
+	$(RM) floatrep numdif root2 newrap
 
 tarball: all
 	$(MAKE) clean

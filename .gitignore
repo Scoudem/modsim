@@ -1,3 +1,13 @@
+# Ignore all
+*
+
+# Unignore all with extensions
+!*.*
+!Makefile
+
+# Unignore all dirs
+!*/
+
 # Object files
 *.o
 *.ko

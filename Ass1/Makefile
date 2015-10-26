@@ -2,6 +2,7 @@ UVAID1=10551832
 UVAID2=10617558
 UVAID=$(UVAID1)-$(UVAID2)
 PROGNAME=modsim1
+FILES=floatrep.c numdif.c root2.c newrap.c Makefile
 
 MKDIR=mkdir
 PACK=tar -jcvf
@@ -28,9 +29,9 @@ newrap:
 clean:
 	$(RM) *.o  $(PROGNAME)-$(UVAID).tbz
 
-tarball: $(PROGNAME)
+tarball: all
 	$(MAKE) clean
 	$(MKDIR) $(PROGNAME)-$(UVAID)
-	$(CP) * $(PROGNAME)-$(UVAID) || true
+	$(CP) $(FILES) $(PROGNAME)-$(UVAID) || true
 	$(PACK) $(PROGNAME)-$(UVAID).tbz $(PROGNAME)-$(UVAID)/*
 	$(RM) $(PROGNAME)-$(UVAID)

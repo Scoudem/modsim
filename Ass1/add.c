@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include "add.h"
-
 /*
  * This test program computes the sum of the series 1/i, with i an 
  * integer running from a value "from" to a value "to" (inclusive).
@@ -106,46 +104,46 @@ addReverseDouble(int from, int to)
     return sum;
 }
 
-/*int
-main(int argc, char* argv[])
-{
-    int from = 1;
-    int to = 1000;
-    int i;
-    int j;
-    double sum[6];
-    if (argc > 1)
-    {
-        from = atoi(argv[1]);
-        if (argc > 2)
-        {
-            to = atoi(argv[2]);
-        }
-        if (from < 1) from = 1;
-        if (to < from) to = from + 100;
-    }
-    printf("The sum of the series 1/i, with i running from %d to %d is\n",
-            from, to);
-    printf("Forward summation with floats: %g\n",
-           sum[0] =addForward(from, to));
-    printf("Reverse summation with floats: %g\n",
-           sum[1] =addReverse(from, to));
-    printf("Recursive summation with floats: %g\n",
-           sum[2] =addRecursive(from, to));
-    printf("Forward summation with doubles: %g\n",
-           sum[3] =addForwardDouble(from, to));
-    printf("Reverse summation with doubles: %g\n",
-           sum[4] =addReverseDouble(from, to));
-    printf("Recursive summation with doubles: %g\n",
-           sum[5] =addRecursiveDouble(from, to));
-    printf("Differences between results in a matrix:\n");
-    for (i = 0; i< 6; i++)
-    {
-        for (j = 0; j< 6; j++)
-        {
-            printf("%12.5g\t", sum[i] - sum[j]);
-        }
-        printf("\n");
-    }
-    return 0;
-}*/
+// int
+// main(int argc, char* argv[])
+// {
+//     int from = 1;
+//     int to = 1000;
+//     int i;
+//     int j;
+//     double sum[6];
+//     if (argc > 1)
+//     {
+//         from = atoi(argv[1]);
+//         if (argc > 2)
+//         {
+//             to = atoi(argv[2]);
+//         }
+//         if (from < 1) from = 1;
+//         if (to < from) to = from + 100;
+//     }
+//     printf("The sum of the series 1/i, with i running from %d to %d is\n",
+//             from, to);
+//     printf("Forward summation with floats: %g\n",
+//            sum[0] =addForward(from, to));
+//     printf("Reverse summation with floats: %g\n",
+//            sum[1] =addReverse(from, to));
+//     printf("Recursive summation with floats: %g\n",
+//            sum[2] =addRecursive(from, to));
+//     printf("Forward summation with doubles: %g\n",
+//            sum[3] =addForwardDouble(from, to));
+//     printf("Reverse summation with doubles: %g\n",
+//            sum[4] =addReverseDouble(from, to));
+//     printf("Recursive summation with doubles: %g\n",
+//            sum[5] =addRecursiveDouble(from, to));
+//     printf("Differences between results in a matrix:\n");
+//     for (i = 0; i< 6; i++)
+//     {
+//         for (j = 0; j< 6; j++)
+//         {
+//             printf("%12.5g\t", sum[i] - sum[j]);
+//         }
+//         printf("\n");
+//     }
+//     return 0;
+// }

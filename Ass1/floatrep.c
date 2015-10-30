@@ -7,6 +7,7 @@
 
 #include <float.h>
 #include <stdio.h>
+#include <math.h>
 #include "add.h"
 
 void
@@ -38,6 +39,24 @@ invalid_operations()
     printf("(4*10^70)^2:                      %g\n", pow(y, 2));
     printf("(3*10^70)^2 + (4*10^70)^2:        %g\n", pow(x, 2) + pow(y, 2));
     printf("sqrt((3*10^70)^2 + (4*10^70)^2):  %g\n", sqrt(pow(x, 2) + pow(y, 2)));
+}
+
+float
+KahanSummation(int from, int to)
+{
+    int i;
+    float y, t;
+
+    float sum = 1.0 / (float)from;
+    float c = 0.0;
+    for (i = from + 1; i <= to; i++)
+    {
+        y = (1.0 / (float) i) - c;
+        t = sum + y;
+        c = (t - sum) - y;
+        sum = t;
+    }
+    return sum;
 }
 
 void

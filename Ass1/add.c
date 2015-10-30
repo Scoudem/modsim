@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include "add.h"
+
 /*
  * This test program computes the sum of the series 1/i, with i an 
  * integer running from a value "from" to a value "to" (inclusive).
@@ -104,7 +106,7 @@ addReverseDouble(int from, int to)
     return sum;
 }
 
-int
+/*int
 main(int argc, char* argv[])
 {
     int from = 1;
@@ -146,4 +148,4 @@ main(int argc, char* argv[])
         printf("\n");
     }
     return 0;
-}
+}*/

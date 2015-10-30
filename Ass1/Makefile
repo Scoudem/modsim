@@ -14,8 +14,11 @@ RM=rm -rf
 
 all: floatrep numdif root2 newrap
 
-floatrep: floatrep.c
-	$(CC) $(CFLAGS) -o floatrep floatrep.c $(LDFLAGS)
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
+
+floatrep: floatrep.o add.o
+	$(CC) $(CFLAGS) -o floatrep floatrep.o add.o $(LDLAGS)
 
 numdif: numdif.c
 	$(CC) $(CFLAGS) -o numdif  numdif.c $(LDFLAGS)

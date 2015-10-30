@@ -18,7 +18,7 @@ all: floatrep numdif root2 newrap
 	$(CC) $(CFLAGS) -c $< -o $@
 
 floatrep: floatrep.o add.o
-	$(CC) $(CFLAGS) -o floatrep floatrep.o add.o $(LDLAGS)
+	$(CC) $(CFLAGS) -o floatrep floatrep.o add.o $(LDFLAGS)
 
 numdif: numdif.c
 	$(CC) $(CFLAGS) -o numdif  numdif.c $(LDFLAGS)

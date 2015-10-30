@@ -7,7 +7,7 @@ FILES=floatrep.c numdif.c root2.c newrap.c Makefile
 MKDIR=mkdir
 PACK=tar -jcvf
 CC=gcc
-CFLAGS=-Wall -Wextra -O1 -pedantic -std=c99
+CFLAGS=-Wall -Wextra -O1 -pedantic -std=c99 -Wunused-parameter
 LDFLAGS=-lm
 CP=cp
 RM=rm -rf

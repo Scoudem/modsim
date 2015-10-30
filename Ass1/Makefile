@@ -18,16 +18,16 @@ all: floatrep numdif root2 newrap
 	$(CC) $(CFLAGS) -c $< -o $@
 
 floatrep: floatrep.o add.o
-	$(CC) $(CFLAGS) -o floatrep floatrep.o add.o $(LDLAGS)
+	$(CC) $(CFLAGS) -o floatrep floatrep.o add.o $(LDFLAGS)
 
 numdif: numdif.c
-	$(CC) $(CFLAGS) -o numdif  numdif.c $(LDLAGS)
+	$(CC) $(CFLAGS) -o numdif  numdif.c $(LDFLAGS)
 
 root2: root2.c
-	$(CC) $(CFLAGS) -o root2  root2.c $(LDLAGS)
+	$(CC) $(CFLAGS) -o root2  root2.c $(LDFLAGS)
 
 newrap: newrap.c
-	$(CC) $(CFLAGS) -o newrap  newrap.c $(LDLAGS)
+	$(CC) $(CFLAGS) -o newrap  newrap.c $(LDFLAGS)
 
 clean:
 	$(RM) *.o  $(PROGNAME)-$(UVAID).tbz

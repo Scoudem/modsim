@@ -8,12 +8,6 @@
 #include <math.h>
 #define M_PI (3.14159265358979323846264338327950288)
 
-/*
-Write two routines to perform numerical differentiation on a given function, given a parameter value x
-and an increment h. Use right-hand and central differencing. Both functions will have three parameters:
-the function to be differentiated, x and h. */
-
-
 double
 derivative_righthand(double (*f)(double), double x, double h)
 {
@@ -27,10 +21,6 @@ derivative_central(double (*f)(double), double x, double h)
 }
 
 /*
-Now use these routines to find the derivative of sin(x) for x = π/3, 100π +π/3, 10^12π +π/3. Start with a
-moderately large value for h (like 0.5) and gradually decrease h. As h decreases, you will see the results
-improve and then deteriorate again.
-
 Experiment with the value of h to find the most accurate result in 
 each case: create a table and/or a graph showing the error as a function of h for each value of x.
 
@@ -43,7 +33,7 @@ test_sinus_derivative(double x, char* stringrep)
 {
     double h, real, righthand, central;
     printf("\n==========Derivative sin(%s)==========\n", stringrep);
-    printf("h\t\treal\t\trighthand\terror\t\tcentral\t\terror\n");
+    printf("h\t\treal\t\trighthand\terror * h\tcentral\t\terror * h\n");
 
     real = cos(x);
     for (h = 0.5; h > 0.0001; h /= 10) {
@@ -54,9 +44,11 @@ test_sinus_derivative(double x, char* stringrep)
         printf("%lf\t", real);
 
         printf("%lf\t", righthand);
-        printf("%lf\t", fabs(real - righthand));
+        printf("%lf\t", fabs(real - righthand) * real);
         printf("%lf\t", central);
-        printf("%lf\t", fabs(real - central));
+        printf("%lf\t", fabs(real - central) * real);
+
+        //TODO: show the error as function of h
         printf("\n");
     }
 }

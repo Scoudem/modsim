@@ -23,11 +23,15 @@ binsearch_root(double a, double b, double (*f)(double), int *steps, double *root
 {   
     double c;
 
+    printf("Step\t|f(x)|\n");
+
     *steps = 0;
     while(++*steps < MAX_CYCLES)
-    {   
+    {
         c = (a + b) / 2;
         *root = f(c);
+
+        printf("%d\t%.17g\n", *steps, *root);
 
         if(CLOSE(*root, 0) || (b - a) / 2 < TOLERANCE)
         {   

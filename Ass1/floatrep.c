@@ -41,6 +41,10 @@ invalid_operations()
     printf("sqrt((3*10^70)^2 + (4*10^70)^2):  %g\n", sqrt(pow(x, 2) + pow(y, 2)));
 }
 
+/*
+ * Kahan summation
+ * This function will sum all values 1/k for k between from and to.
+ */
 float
 KahanSummation(int from, int to)
 {
@@ -72,26 +76,26 @@ summation(int from, int to)
     printf("\n==========Summation==========\n");
     printf("The sum of the series 1/i, with i running from %d to %d is\n",
             from, to);
-    printf("Forward summation with floats: %g\n",
+    printf("Forward summation with floats:\t\t%2.17g\n",
            sum[0] =addForward(from, to));
-    printf("Reverse summation with floats: %g\n",
+    printf("Reverse summation with floats:\t\t%2.17g\n",
            sum[1] =addReverse(from, to));
-    printf("Recursive summation with floats: %g\n",
+    printf("Recursive summation with floats:\t%2.17g\n",
            sum[2] =addRecursive(from, to));
-    printf("Forward summation with doubles: %g\n",
+    printf("Forward summation with doubles:\t\t%2.17g\n",
            sum[3] =addForwardDouble(from, to));
-    printf("Reverse summation with doubles: %g\n",
+    printf("Reverse summation with doubles:\t\t%2.17g\n",
            sum[4] =addReverseDouble(from, to));
-    printf("Recursive summation with doubles: %g\n",
+    printf("Recursive summation with doubles:\t%2.17g\n",
            sum[5] =addRecursiveDouble(from, to));
-    printf("Kahan summation with floats: %g\n",
+    printf("Kahan summation with floats:\t\t%2.17g\n",
            sum[6] =KahanSummation(from, to));
     printf("Differences between results in a matrix:\n");
     for (i = 0; i< 7; i++)
     {
         for (j = 0; j< 7; j++)
         {
-            printf("%12.5g\t", sum[i] - sum[j]);
+            printf("%12.7g\t", sum[i] - sum[j]);
         }
         printf("\n");
     }

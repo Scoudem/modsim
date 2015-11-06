@@ -34,20 +34,20 @@ test_sinus_derivative(double x, char* stringrep)
 {
     double h, real, righthand, central;
     printf("\n==========Derivative sin(%s)==========\n", stringrep);
-    printf("h\t\treal\t\trighthand\terror * h\tcentral\t\terror * h\n");
+    printf("\th\t\treal\t\t\trighthand\t\terror * h\t\tcentral\t\t\terror * h\n");
 
     real = cos(x);
-    for (h = 0.5; h > 0.0001; h /= 10) {
+    for (h = 0.5; h > 0.0001; h /= 4) {
         righthand = derivative_righthand(sin, x, h);
         central = derivative_central(sin, x, h);
 
-        printf("%.17g\t", h);
-        printf("%.17g\t", real);
+        printf("%17.17g\t", h);
+        printf("%17.17g\t", real);
 
-        printf("%.17g\t", righthand);
-        printf("%.17g\t", fabs(real - righthand) * real);
-        printf("%.17g\t", central);
-        printf("%.17g\t", fabs(real - central) * real);
+        printf("%17.17g\t", righthand);
+        printf("%17.17g\t", fabs(real - righthand) * real);
+        printf("%17.17g\t", central);
+        printf("%17.17g\t", fabs(real - central) * real);
 
         printf("\n");
     }

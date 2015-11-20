@@ -26,16 +26,16 @@ class Euler:
             raise ValueError('Stepsize should be greater than 0')
 
         self._function = function
-        self._timestep = time
-        self._x_values = [0] * (time + 1)
-        self._y_values = [0] * time + [y0]
+        self._timestep = 0
+        self._t_values = [time]
+        self._y_values = [y0]
         self._stepsize = stepsize
 
-    def get_x_values(self):
+    def get_t_values(self):
         '''
-        Returns the current list of x values
+        Returns the current list of t values
         '''
-        return self._x_values
+        return self._t_values
 
     def get_y_values(self):
         '''
@@ -54,16 +54,16 @@ class Euler:
         '''
         Generates the next value of the given function
         '''
-        an = self._function(self._x_values[self._timestep],
+        an = self._function(self._t_values[self._timestep],
                             self._y_values[self._timestep])
-        self._x_values.append(self._x_values[self._timestep] + self._stepsize)
+        self._t_values.append(self._t_values[self._timestep] + self._stepsize)
         self._y_values.append(self._y_values[self._timestep] +
                               self._stepsize * an)
 
         if isinf(self._y_values[-1]):
             raise OverflowError(
-                "y reached infinity. Stopping generation at {}".format(
-                    self._timestep
+                "y reached infinity. Stopping generation at t={}".format(
+                    self._t_values[self._timestep]
                 )
             )
 
@@ -76,7 +76,7 @@ class Euler:
         return "Current timestep: {}.\nStepsize: {}.\nx: {}.\ny: {}.".format(
             self._timestep,
             self._stepsize,
-            self._x_values,
+            self._t_values,
             self._y_values
         )
 
@@ -98,12 +98,12 @@ if __name__ == '__main__':
     euler4.generate_n(10)
 
     plt.subplot(221)
-    plt.plot(euler1.get_x_values(), euler1.get_y_values())
+    plt.plot(euler1.get_t_values(), euler1.get_y_values())
     plt.subplot(222)
-    plt.plot(euler2.get_x_values(), euler2.get_y_values())
+    plt.plot(euler2.get_t_values(), euler2.get_y_values())
     plt.subplot(223)
-    plt.plot(euler3.get_x_values(), euler3.get_y_values())
+    plt.plot(euler3.get_t_values(), euler3.get_y_values())
     plt.subplot(224)
-    plt.plot(euler4.get_x_values(), euler4.get_y_values())
+    plt.plot(euler4.get_t_values(), euler4.get_y_values())
 
     plt.show()

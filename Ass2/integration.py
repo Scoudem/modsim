@@ -18,13 +18,18 @@ class Euler:
     Optional: stepsize
     '''
     def __init__(self, function, time, y0, stepsize=1):
+        if time < 0:
+            raise ValueError('Time should be equal or greater than 0')
+        if not isinstance(function, type(lambda:0)):
+            raise ValueError('Given variable is not a lambda or function')
+        if stepsize <= 0:
+            raise ValueError('Stepsize should be greater than 0')
+
         self._function = function
         self._timestep = time
         self._x_values = [0] * (time + 1)
         self._y_values = [0] * time + [y0]
         self._stepsize = stepsize
-
-        print self
 
 
     '''
@@ -90,27 +95,20 @@ if __name__ == '__main__':
     euler1 = Euler(lambda x, y: 1, 0, 0)
     euler2 = Euler(lambda x, y: y, 0, 0)
     euler3 = Euler(lambda x, y: y, 0, 1)
-    euler4 = Euler(lambda x, y: y * y, -1, 1)
-    euler5 = Euler(lambda x, y: y * y, 1, 1)
+    euler4 = Euler(lambda x, y: y * y, 1, 1)
 
     euler1.generateN(10)
     euler2.generateN(10)
     euler3.generateN(5)
-    euler4.generateN(1)
-    euler5.generateN(10)
+    euler4.generateN(10)
 
-    print euler1, euler2, euler3, euler4, euler5
-
-    # ax = plt.gca()
-    # ax.set_yscale("log")
-    plt.subplot(231)
+    plt.subplot(221)
     plt.plot(euler1.getXValues(), euler1.getYValues())
-    plt.subplot(232)
+    plt.subplot(222)
     plt.plot(euler2.getXValues(), euler2.getYValues())
-    plt.subplot(233)
+    plt.subplot(223)
     plt.plot(euler3.getXValues(), euler3.getYValues())
-    plt.subplot(234)
+    plt.subplot(224)
     plt.plot(euler4.getXValues(), euler4.getYValues())
-    plt.subplot(235)
-    plt.plot(euler5.getXValues(), euler5.getYValues())
+
     plt.show()

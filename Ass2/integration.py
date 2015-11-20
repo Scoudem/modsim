@@ -40,8 +40,6 @@ class Euler:
         self._y_values = np.swapaxes(np.array(y0, ndmin=2), 0, 1)
         self._stepsize = stepsize
 
-        print self
-
     def get_t_values(self):
         '''
         Returns the current list of t values
@@ -104,9 +102,157 @@ class Euler:
         )
 
 
+class RungeKutta2:
+    '''
+    The classical Runge-Kutta method
+    '''
+    def __init__(self, function, time, y0, stepsize=1):
+        '''
+        Constructor, takes a function, initial timestep, initial y value.
+        Optional: stepsize
+        '''
+        if time < 0:
+            raise ValueError('Time should be equal or greater than 0')
+        if not isinstance(function, type(lambda: 0)):
+            raise ValueError('Given variable is not a lambda or function')
+        if stepsize <= 0:
+            raise ValueError('Stepsize should be greater than 0')
+
+        self._function = function
+        self._timestep = time
+        self._t_values = [0] * (time + 1)
+        self._y_values = [0] * time + [y0]
+        self._stepsize = stepsize
+
+    def get_t_values(self):
+        '''
+        Returns the current list of t values
+        '''
+        return self._t_values
+
+    def get_y_values(self):
+        '''
+        Returns the current list of y values
+        '''
+        return self._y_values
+
+    def generate_n(self, n):
+        '''
+        Generates the next n values of the given function
+        '''
+        for n in range(n):
+            self.get_next()
+
+    def get_next(self):
+        '''
+        Generates the next value of the given function
+        '''
+        current_y = self._y_values[self._timestep]
+
+        h = self._stepsize
+        k1 = self._function(self._timestep, current_y)
+        k2 = self._function(self._timestep + (h / 2.0), current_y + (h / 2) * k1)
+
+        k_parts = k1 + 2 * k2 + 2 * k3 + k4
+        next_y = current_y + (self._stepsize / 6.0) * k_parts
+
+        self._y_values.append(next_y)
+        self._t_values.append(self._t_values[self._timestep] + self._stepsize)
+
+        if isinf(self._y_values[-1]):
+            raise OverflowError(
+                "y reached infinity. Stopping generation at {}".format(
+                    self._timestep
+                )
+            )
+
+        self._timestep += 1
+
+
+class RungeKutta4:
+    '''
+    The classical Runge-Kutta method
+    '''
+    def __init__(self, function, time, y0, stepsize=1):
+        '''
+        Constructor, takes a function, initial timestep, initial y value.
+        Optional: stepsize
+        '''
+        if time < 0:
+            raise ValueError('Time should be equal or greater than 0')
+        if not isinstance(function, type(lambda: 0)):
+            raise ValueError('Given variable is not a lambda or function')
+        if stepsize <= 0:
+            raise ValueError('Stepsize should be greater than 0')
+
+        self._function = function
+        self._timestep = time
+        self._t_values = [0] * (time + 1)
+        self._y_values = [0] * time + [y0]
+        self._stepsize = stepsize
+
+    def get_t_values(self):
+        '''
+        Returns the current list of t values
+        '''
+        return self._t_values
+
+    def get_y_values(self):
+        '''
+        Returns the current list of y values
+        '''
+        return self._y_values
+
+    def generate_n(self, n):
+        '''
+        Generates the next n values of the given function
+        '''
+        for n in range(n):
+            self.get_next()
+
+    def get_next(self):
+        '''
+        Generates the next value of the given function
+        '''
+        c_y = self._y_values[self._timestep]
+
+        h = self._stepsize
+        k1 = self._function(self._timestep, c_y)
+        k2 = self._function(self._timestep + (h / 2.0), c_y + (h / 2.0) * k1)
+        k3 = self._function(self._timestep + (h / 2.0), c_y + (h / 2.0) * k2)
+        k4 = self._function(self._timestep + h, c_y + h * k3)
+
+        k_parts = k1 + 2 * k2 + 2 * k3 + k4
+        next_y = c_y + (self._stepsize / 6.0) * k_parts
+
+        self._y_values.append(next_y)
+        self._t_values.append(self._t_values[self._timestep] + self._stepsize)
+
+        print self
+        if isinf(self._y_values[-1]):
+            raise OverflowError(
+                "y reached infinity. Stopping generation at {}".format(
+                    self._timestep
+                )
+            )
+
+        self._timestep += self._stepsize
+
+    def __str__(self):
+        '''
+        Returns a string containing all variables
+        '''
+        return "Current timestep: {}.\nStepsize: {}.\nx: {}.\ny: {}.".format(
+            self._timestep,
+            self._stepsize,
+            self._t_values,
+            self._y_values
+        )
+
+
 if __name__ == '__main__':
     '''
-    Tests
+    Tests for Euler
     '''
     import matplotlib.pyplot as plt
 
@@ -142,5 +288,32 @@ if __name__ == '__main__':
     euler6.generate_n(10)
     plt.plot(euler6.get_t_values(), euler6.get_y_values(0), 'r')
     plt.plot(euler6.get_t_values(), euler6.get_y_values(1), 'b')
+
+    plt.show()
+    plt.close()
+
+    '''
+    Tests for RungeKutta4
+    '''
+    import matplotlib.pyplot as plt
+
+    euler1 = RungeKutta4(lambda x, y: 1, 0, 0)
+    euler2 = RungeKutta4(lambda x, y: y, 0, 0)
+    euler3 = RungeKutta4(lambda x, y: y, 0, 1)
+    euler4 = RungeKutta4(lambda x, y: y * y, 1, 1)
+
+    euler1.generate_n(10)
+    euler2.generate_n(10)
+    euler3.generate_n(5)
+    # euler4.generate_n(10)
+
+    plt.subplot(221)
+    plt.plot(euler1.get_t_values(), euler1.get_y_values())
+    plt.subplot(222)
+    plt.plot(euler2.get_t_values(), euler2.get_y_values())
+    plt.subplot(223)
+    plt.plot(euler3.get_t_values(), euler3.get_y_values())
+    # plt.subplot(224)
+    # plt.plot(euler4.get_t_values(), euler4.get_y_values())
 
     plt.show()

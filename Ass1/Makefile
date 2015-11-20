@@ -2,7 +2,7 @@ UVAID1=10551832
 UVAID2=10617558
 UVAID=$(UVAID1)-$(UVAID2)
 PROGNAME=modsim1
-FILES=floatrep.c numdif.c root2.c newrap.c Makefile
+FILES=floatrep.c numdif.c root2.c newrap.c add.c add.h Makefile
 
 MKDIR=mkdir
 PACK=tar -jcvf

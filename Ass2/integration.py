@@ -27,8 +27,8 @@ class Euler:
             functions = [functions]
         if not isinstance(y0, list):
             y0 = [y0]
-        #TODO: check if lengths if functions list and y0 list are equal
-        #TODO: check if initial values are numeric
+        # TODO: check if lengths if functions list and y0 list are equal
+        # TODO: check if initial values are numeric
 
         for f in functions:
             if not isinstance(f, type(lambda: 0)):
@@ -50,10 +50,10 @@ class Euler:
 
     def get_y_values(self, index=0):
         '''
-        Returns the current list of y values for the function with the given index
+        Returns the current list of values for the function at the given index
         '''
         print self._y_values[index, :]
-        return self._y_values[index,:]
+        return self._y_values[index, :]
 
     def generate_n(self, n):
         '''
@@ -67,15 +67,17 @@ class Euler:
         Generates the next value for each of the functions
         '''
         an = []
-        args = tuple([self._t_values[self._timestep]] + self._y_values[:,self._timestep].tolist())
+        args = tuple([self._t_values[self._timestep]]
+                     + self._y_values[:, self._timestep].tolist())
 
         for function in self._functions:
             an.append(function(args))
 
         for i, val in enumerate(an):
-            an[i] = self._y_values[i,self._timestep] + self._stepsize * an[i]
+            an[i] = self._y_values[i, self._timestep] + self._stepsize * an[i]
 
-            #TODO: should this inf check be after appending y and t to their arrays? (so the value will be included?)
+            # TODO: should this inf check be after appending y and t
+            #       to their arrays? (so the value will be included?)
             if isinf(an[i]):
                 raise OverflowError(
                     "y{} reached infinity. Stopping generation at t={}".format(
@@ -84,7 +86,8 @@ class Euler:
                     )
                 )
 
-        self._y_values = np.append(self._y_values, np.swapaxes(np.array([an]), 0, 1), axis=1)
+        an = np.swapaxes(np.array([an]), 0, 1)
+        self._y_values = np.append(self._y_values, an, axis=1)
         self._t_values.append(self._t_values[self._timestep] + self._stepsize)
 
         self._timestep += 1
@@ -132,7 +135,10 @@ if __name__ == '__main__':
     '''
     Euler test with multiple functions
     '''
-    euler6 = Euler([lambda (t, x, y): 0.5 * x, lambda (t, x, y): 0.5 * x - 1], 0, [1, 2])
+    euler6 = Euler([
+        lambda (t, x, y): 0.5 * x,
+        lambda (t, x, y): 0.5 * x - 1
+        ], 0, [1, 2])
     euler6.generate_n(10)
     plt.plot(euler6.get_t_values(), euler6.get_y_values(0), 'r')
     plt.plot(euler6.get_t_values(), euler6.get_y_values(1), 'b')

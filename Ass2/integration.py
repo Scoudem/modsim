@@ -122,7 +122,7 @@ class RungeKutta2:
     '''
     The second order Runge-Kutta method
     '''
-    def __init__(self, function, time, y0, stepsize=1):
+    def __init__(self, functions, time, y0, stepsize=1):
         '''
         Constructor, takes functions, initial timestep, initial y values.
         Optional: stepsize
@@ -364,13 +364,17 @@ if __name__ == '__main__':
     '''
     import matplotlib.pyplot as plt
 
-    functions = [RungeKutta2, RungeKutta4]
+    functions = [Euler, RungeKutta2]#, RungeKutta4]
     for function in functions:
         results = [
-            function(lambda x, y: 1, 0, 0),
-            function(lambda x, y: y, 0, 0),
-            function(lambda x, y: y, 0, 1),
-            function(lambda x, y: y * y, 1, 1)
+            function(lambda (t, x): 1, 0, 0),
+            # function(lambda (t, x): x, 0, 0),
+            function(lambda (t, x): x, 0, 1),
+            function(lambda (t, x): x * x, 1, 1),
+            function([
+                lambda (t, x, y): 0.5 * x,
+                lambda (t, x, y): 0.5 * x - 1
+            ], 0, [1, 2])
         ]
 
         for object in results:

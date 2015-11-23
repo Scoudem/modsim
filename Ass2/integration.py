@@ -13,7 +13,10 @@ import numpy as np
 import numbers
 
 
-class Euler:
+class IntegrationTechnique:
+    '''
+    Base class containing methods used for integration
+    '''
     def __init__(self, functions, time, y0, stepsize=1):
         '''
         Constructor, takes a function, initial timestep, initial y value.
@@ -68,11 +71,28 @@ class Euler:
         except OverflowError, e:
             print e
 
+    def __str__(self):
+            '''
+            Returns a string containing all variables
+            '''
+            s = "Current timestep: {}.\nStepsize: {}.\nx: {}.\ny: {}.".format(
+                self._timestep,
+                self._stepsize,
+                self._t_values,
+                self._y_values
+            )
+
+            return s
+
+
+class Euler(IntegrationTechnique):
+
     def get_next(self):
         '''
         Generates the next value for each of the functions
         '''
         an = []
+        h = self._stepsize
         args = tuple([self._t_values[self._timestep]]
                      + self._y_values[:, self._timestep].tolist())
 
@@ -80,11 +100,12 @@ class Euler:
             an.append(function(args))
 
         for i, val in enumerate(an):
-            an[i] = self._y_values[i, self._timestep] + self._stepsize * an[i]
+            an[i] = self._y_values[i, self._timestep] + h * an[i]
 
             if isinf(an[i]):
                 raise OverflowError(
-                    "y{} reached infinity. Stopping generation at t={}".format(
+                    "y{} reached infinity. Stopping generation at t={}".
+                    format(
                         i,
                         self._t_values[self._timestep]
                     )
@@ -92,20 +113,9 @@ class Euler:
 
         an = np.swapaxes(np.array([an]), 0, 1)
         self._y_values = np.append(self._y_values, an, axis=1)
-        self._t_values.append(self._t_values[self._timestep] + self._stepsize)
+        self._t_values.append(self._t_values[self._timestep] + h)
 
         self._timestep += 1
-
-    def __str__(self):
-        '''
-        Returns a string containing all variables
-        '''
-        return "Current timestep: {}.\nStepsize: {}.\nx: {}.\ny: {}.".format(
-            self._timestep,
-            self._stepsize,
-            self._t_values,
-            self._y_values
-        )
 
 
 class RungeKutta2:

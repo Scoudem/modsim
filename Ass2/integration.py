@@ -10,6 +10,7 @@ Contains Euler and second and fourth order Runge-Kutta integration methods.
 
 from math import isinf
 import numpy as np
+import numbers
 
 
 class Euler:
@@ -27,12 +28,17 @@ class Euler:
             functions = [functions]
         if not isinstance(y0, list):
             y0 = [y0]
-        # TODO: check if lengths if functions list and y0 list are equal
-        # TODO: check if initial values are numeric
+        if len(y0) != len(functions):
+            raise ValueError('Amount of functions should be equal to amount ' +
+                             'of initial values')
 
         for f in functions:
             if not isinstance(f, type(lambda: 0)):
                 raise ValueError('Given variable is not a lambda or function')
+
+        for v in y0:
+            if not isinstance(v, numbers.Real):
+                raise ValueError('Initial values should be real numbers')
 
         self._functions = functions
         self._timestep = 0
@@ -74,8 +80,6 @@ class Euler:
         for i, val in enumerate(an):
             an[i] = self._y_values[i, self._timestep] + self._stepsize * an[i]
 
-            # TODO: should this inf check be after appending y and t
-            #       to their arrays? (so the value will be included?)
             if isinf(an[i]):
                 raise OverflowError(
                     "y{} reached infinity. Stopping generation at t={}".format(

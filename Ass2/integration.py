@@ -62,8 +62,11 @@ class Euler:
         '''
         Generates the next n values of the given function
         '''
-        for n in range(n):
-            self.get_next()
+        try:
+            for n in range(n):
+                self.get_next()
+        except OverflowError, e:
+            print e
 
     def get_next(self):
         '''
@@ -143,8 +146,11 @@ class RungeKutta2:
         '''
         Generates the next n values of the given function
         '''
-        for n in range(n):
-            self.get_next()
+        try:
+            for n in range(n):
+                self.get_next()
+        except OverflowError, e:
+            print e
 
     def get_next(self):
         '''
@@ -211,10 +217,11 @@ class RungeKutta4:
         '''
         Generates the next n values of the given function
         '''
-        for n in range(n):
-            self.get_next()
-
-        print self
+        try:
+            for n in range(n):
+                self.get_next()
+        except OverflowError, e:
+            print e
 
     def get_next(self):
         '''
@@ -328,6 +335,7 @@ if __name__ == '__main__':
     plt.subplot(223)
     plt.plot(rk3.get_t_values(), rk3.get_y_values())
     plt.subplot(224)
+    plt.yscale('log')
     plt.plot(rk4.get_t_values(), rk4.get_y_values())
 
     plt.show()

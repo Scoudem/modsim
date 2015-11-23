@@ -55,11 +55,11 @@ class IntegrationTechnique:
         '''
         return self._t_values
 
-    def get_y_values(self, index=0):
+    def get_y_values(self):
         '''
-        Returns the current list of values for the function at the given index
+        Returns the current list of values for the function
         '''
-        return self._y_values[index, :]
+        return self._y_values
 
     def generate_n(self, n):
         '''
@@ -72,21 +72,23 @@ class IntegrationTechnique:
             print e
 
     def __str__(self):
-            '''
-            Returns a string containing all variables
-            '''
-            s = "Current timestep: {}.\nStepsize: {}.\nx: {}.\ny: {}.".format(
-                self._timestep,
-                self._stepsize,
-                self._t_values,
-                self._y_values
-            )
+        '''
+        Returns a string containing all variables
+        '''
+        s = "Current timestep: {}.\nStepsize: {}.\nx: {}.\ny: {}.".format(
+            self._timestep,
+            self._stepsize,
+            self._t_values,
+            self._y_values
+        )
 
-            return s
+        return s
 
 
 class Euler(IntegrationTechnique):
-
+    '''
+    Basic Euler integration
+    '''
     def get_next(self):
         '''
         Generates the next value for each of the functions
@@ -118,81 +120,33 @@ class Euler(IntegrationTechnique):
         self._timestep += 1
 
 
-class RungeKutta2:
+class RungeKutta2(IntegrationTechnique):
     '''
     The second order Runge-Kutta method
     '''
-    def __init__(self, functions, time, y0, stepsize=1):
-        '''
-        Constructor, takes functions, initial timestep, initial y values.
-        Optional: stepsize
-        '''
-        if time < 0:
-            raise ValueError('Time should be equal or greater than 0')
-        if stepsize <= 0:
-            raise ValueError('Stepsize should be greater than 0')
-
-        if not isinstance(functions, list):
-            functions = [functions]
-        if not isinstance(y0, list):
-            y0 = [y0]
-        if len(y0) != len(functions):
-            raise ValueError('Amount of functions should be equal to amount ' +
-                             'of initial values')
-
-        for f in functions:
-            if not isinstance(f, type(lambda: 0)):
-                raise ValueError('Given variable is not a lambda or function')
-
-        for v in y0:
-            if not isinstance(v, numbers.Real):
-                raise ValueError('Initial values should be real numbers')
-
-        self._functions = functions
-        self._timestep = 0
-        self._t_values = [time]
-        self._y_values = np.swapaxes(np.array(y0, ndmin=2), 0, 1)
-        self._stepsize = stepsize
-
-    def get_t_values(self):
-        '''
-        Returns the current list of t values
-        '''
-        return self._t_values
-
-    def get_y_values(self, index=0):
-        '''
-        Returns the current list of values for the function at the given index
-        '''
-        return self._y_values[index, :]
-
-    def generate_n(self, n):
-        '''
-        Generates the next n values of the given function
-        '''
-        try:
-            for n in range(n):
-                self.get_next()
-        except OverflowError, e:
-            print e
 
     def get_next(self):
         '''
         Generates the next value for each of the functions
         '''
+
         t = self._timestep
         h = self._stepsize
         y_values = self._y_values[:, t].tolist()
 
-        k1_args = tuple([self._t_values[t]]
-                      + y_values)
+        k1_args = tuple(
+            [self._t_values[t]] + y_values
+        )
         k1 = []
+
         for function in self._functions:
             k1.append(function(k1_args))
 
-        k2_args = tuple([self._t_values[t] + (h / 2.0)]
-                      + [current_y + h*k1[i] for i, current_y in enumerate(y_values)])
+        k2_args = tuple(
+            [self._t_values[t] + (h / 2.0)] +
+            [current_y + h * k1[i] for i, current_y in enumerate(y_values)])
         k2 = []
+
         for function in self._functions:
             k2.append(function(k2_args))
 
@@ -359,13 +313,13 @@ class RungeKutta4:
         )
 
 
-def plot(objects, xscales=[], yscales=[], title=""):
+def plot(objects, xscales={}, yscales={}, title=""):
     '''
     Plots current state of objects in subplots.
     Define xscales and yscales as dict of indexes.
     '''
     l = len(objects)
-    first = round(l / 2)
+    first = l / 2 + 1
     second = l / 2
     for i in range(0, l):
         plt.subplot(first, second, i + 1)
@@ -375,7 +329,12 @@ def plot(objects, xscales=[], yscales=[], title=""):
             plt.yscale(yscales[i])
         fig = plt.gcf()
         fig.suptitle(title, fontsize="x-large")
-        plt.plot(objects[i].get_t_values(), objects[i].get_y_values())
+
+        values = object.get_y_values()
+        x, y = values.shape
+        print values
+        for j in range(x):
+            plt.plot(objects[i].get_t_values(), values[j, :])
 
 if __name__ == '__main__':
     '''
@@ -403,19 +362,3 @@ if __name__ == '__main__':
              yscales={3: 'log'}, title=function.__name__)
         plt.show()
         plt.close()
-
-    '''
-    Euler test with multiple functions
-    '''
-    euler6 = Euler([
-        lambda (t, x, y): 0.5 * x,
-        lambda (t, x, y): 0.5 * x - 1
-    ], 0, [1, 2])
-    euler6.generate_n(10)
-
-    plt.title('Vector Euler')
-    plt.plot(euler6.get_t_values(), euler6.get_y_values(0), 'r')
-    plt.plot(euler6.get_t_values(), euler6.get_y_values(1), 'b')
-
-    plt.show()
-    plt.close()

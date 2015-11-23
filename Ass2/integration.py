@@ -253,6 +253,21 @@ class RungeKutta4:
         )
 
 
+def plot(objects, xscales=[], yscales=[]):
+    '''
+    Plots current state of objects in subplots
+    '''
+    l = len(objects)
+    first = round(l / 2)
+    second = l / 2
+    for i in range(0, l):
+        plt.subplot(first, second, i + 1)
+        if i in xscales:
+            plt.xscale(xscales[i])
+        if i in yscales:
+            plt.yscale(yscales[i])    
+        plt.plot(objects[i].get_t_values(), objects[i].get_y_values())
+
 if __name__ == '__main__':
     '''
     Tests for Euler
@@ -269,15 +284,17 @@ if __name__ == '__main__':
     euler3.generate_n(5)
     euler4.generate_n(10)
 
-    plt.subplot(221)
-    plt.plot(euler1.get_t_values(), euler1.get_y_values())
-    plt.subplot(222)
-    plt.plot(euler2.get_t_values(), euler2.get_y_values())
-    plt.subplot(223)
-    plt.plot(euler3.get_t_values(), euler3.get_y_values())
-    plt.subplot(224)
-    plt.yscale('log')
-    plt.plot(euler4.get_t_values(), euler4.get_y_values())
+    plot([euler1, euler2, euler3, euler4], yscales={3: 'log'})
+
+    # plt.subplot(221)
+    # plt.plot(euler1.get_t_values(), euler1.get_y_values())
+    # plt.subplot(222)
+    # plt.plot(euler2.get_t_values(), euler2.get_y_values())
+    # plt.subplot(223)
+    # plt.plot(euler3.get_t_values(), euler3.get_y_values())
+    # plt.subplot(224)
+    # plt.yscale('log')
+    # plt.plot(euler4.get_t_values(), euler4.get_y_values())
 
     fig = plt.gcf()
     fig.suptitle("Basic 1d Euler", fontsize="x-large")

@@ -13,7 +13,10 @@ import numpy as np
 import numbers
 
 
-class Euler:
+class IntegrationTechnique:
+    '''
+    Base class containing methods used for integration
+    '''
     def __init__(self, functions, time, y0, stepsize=1):
         '''
         Constructor, takes functions, initial timestep, initial y values.
@@ -68,11 +71,28 @@ class Euler:
         except OverflowError, e:
             print e
 
+    def __str__(self):
+            '''
+            Returns a string containing all variables
+            '''
+            s = "Current timestep: {}.\nStepsize: {}.\nx: {}.\ny: {}.".format(
+                self._timestep,
+                self._stepsize,
+                self._t_values,
+                self._y_values
+            )
+
+            return s
+
+
+class Euler(IntegrationTechnique):
+
     def get_next(self):
         '''
         Generates the next value for each of the functions
         '''
         an = []
+        h = self._stepsize
         args = tuple([self._t_values[self._timestep]]
                      + self._y_values[:, self._timestep].tolist())
 
@@ -80,11 +100,12 @@ class Euler:
             an.append(function(args))
 
         for i, val in enumerate(an):
-            an[i] = self._y_values[i, self._timestep] + self._stepsize * an[i]
+            an[i] = self._y_values[i, self._timestep] + h * an[i]
 
             if isinf(an[i]):
                 raise OverflowError(
-                    "y{} reached infinity. Stopping generation at t={}".format(
+                    "y{} reached infinity. Stopping generation at t={}".
+                    format(
                         i,
                         self._t_values[self._timestep]
                     )
@@ -92,20 +113,9 @@ class Euler:
 
         an = np.swapaxes(np.array([an]), 0, 1)
         self._y_values = np.append(self._y_values, an, axis=1)
-        self._t_values.append(self._t_values[self._timestep] + self._stepsize)
+        self._t_values.append(self._t_values[self._timestep] + h)
 
         self._timestep += 1
-
-    def __str__(self):
-        '''
-        Returns a string containing all variables
-        '''
-        return "Current timestep: {}.\nStepsize: {}.\nx: {}.\ny: {}.".format(
-            self._timestep,
-            self._stepsize,
-            self._t_values,
-            self._y_values
-        )
 
 
 class RungeKutta2:
@@ -311,7 +321,7 @@ class RungeKutta4:
 
         if isinf(self._y_values[-1]):
             raise OverflowError(
-                "y reached infinity. Stopping generation at {}".format(
+                "Warning: y reached infinity. Stopped at t={}.".format(
                     self._timestep
                 )
             )
@@ -330,36 +340,46 @@ class RungeKutta4:
         )
 
 
+def plot(objects, xscales=[], yscales=[], title=""):
+    '''
+    Plots current state of objects in subplots.
+    Define xscales and yscales as dict of indexes.
+    '''
+    l = len(objects)
+    first = round(l / 2)
+    second = l / 2
+    for i in range(0, l):
+        plt.subplot(first, second, i + 1)
+        if i in xscales:
+            plt.xscale(xscales[i])
+        if i in yscales:
+            plt.yscale(yscales[i])
+        fig = plt.gcf()
+        fig.suptitle(title, fontsize="x-large")
+        plt.plot(objects[i].get_t_values(), objects[i].get_y_values())
+
 if __name__ == '__main__':
     '''
     Tests for Euler
     '''
     import matplotlib.pyplot as plt
 
-    euler1 = Euler(lambda (t, x): 1, 0, 0)
-    euler2 = Euler(lambda (t, x): x, 0, 0)
-    euler3 = Euler(lambda (t, x): x, 0, 1)
-    euler4 = Euler(lambda (t, x): x * x, 1, 1)
+    functions = [RungeKutta2, RungeKutta4]
+    for function in functions:
+        results = [
+            function(lambda x, y: 1, 0, 0),
+            function(lambda x, y: y, 0, 0),
+            function(lambda x, y: y, 0, 1),
+            function(lambda x, y: y * y, 1, 1)
+        ]
 
-    euler1.generate_n(10)
-    euler2.generate_n(10)
-    euler3.generate_n(5)
-    euler4.generate_n(10)
+        for object in results:
+            object.generate_n(10)
 
-    plt.subplot(221)
-    plt.plot(euler1.get_t_values(), euler1.get_y_values())
-    plt.subplot(222)
-    plt.plot(euler2.get_t_values(), euler2.get_y_values())
-    plt.subplot(223)
-    plt.plot(euler3.get_t_values(), euler3.get_y_values())
-    plt.subplot(224)
-    plt.yscale('log')
-    plt.plot(euler4.get_t_values(), euler4.get_y_values())
-
-    fig = plt.gcf()
-    fig.suptitle("Basic 1d Euler", fontsize="x-large")
-    plt.show()
-    plt.close()
+        plot(results,
+             yscales={3: 'log'}, title=function.__name__)
+        plt.show()
+        plt.close()
 
     '''
     Euler test with multiple functions
@@ -376,32 +396,3 @@ if __name__ == '__main__':
 
     plt.show()
     plt.close()
-
-    '''
-    Tests for RungeKutta4
-    '''
-    import matplotlib.pyplot as plt
-
-    rk1 = RungeKutta4(lambda x, y: 1, 0, 0)
-    rk2 = RungeKutta4(lambda x, y: y, 0, 0)
-    rk3 = RungeKutta4(lambda x, y: y, 0, 1)
-    rk4 = RungeKutta4(lambda x, y: y * y, 1, 1)
-
-    rk1.generate_n(10)
-    rk2.generate_n(10)
-    rk3.generate_n(5)
-    rk4.generate_n(10)
-
-    fig = plt.gcf()
-    fig.suptitle("Fourth order Runge-Kutta", fontsize="x-large")
-    plt.subplot(221)
-    plt.plot(rk1.get_t_values(), rk1.get_y_values())
-    plt.subplot(222)
-    plt.plot(rk2.get_t_values(), rk2.get_y_values())
-    plt.subplot(223)
-    plt.plot(rk3.get_t_values(), rk3.get_y_values())
-    plt.subplot(224)
-    plt.yscale('log')
-    plt.plot(rk4.get_t_values(), rk4.get_y_values())
-
-    plt.show()

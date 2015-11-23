@@ -118,9 +118,9 @@ class RungeKutta2:
             raise ValueError('Stepsize should be greater than 0')
 
         self._function = function
-        self._timestep = time
-        self._t_values = [0] * (time + 1)
-        self._y_values = [0] * time + [y0]
+        self._timestep = int(time)
+        self._t_values = [0.0] * (time + 1)
+        self._y_values = [0.0] * time + [y0]
         self._stepsize = stepsize
 
     def get_t_values(self):
@@ -186,9 +186,9 @@ class RungeKutta4:
             raise ValueError('Stepsize should be greater than 0')
 
         self._function = function
-        self._timestep = time
-        self._t_values = [0] * (time + 1)
-        self._y_values = [0] * time + [y0]
+        self._timestep = int(time)
+        self._t_values = [0.0] * (time + 1)
+        self._y_values = [0.0] * time + [y0]
         self._stepsize = stepsize
 
     def get_t_values(self):
@@ -210,23 +210,27 @@ class RungeKutta4:
         for n in range(n):
             self.get_next()
 
+        print self
+
     def get_next(self):
         '''
         Generates the next value of the given function
         '''
-        c_y = self._y_values[self._timestep]
-
+        t = self._timestep
         h = self._stepsize
-        k1 = self._function(self._timestep, c_y)
-        k2 = self._function(self._timestep + (h / 2.0), c_y + (h / 2.0) * k1)
-        k3 = self._function(self._timestep + (h / 2.0), c_y + (h / 2.0) * k2)
-        k4 = self._function(self._timestep + h, c_y + h * k3)
 
-        k_parts = k1 + 2 * k2 + 2 * k3 + k4
-        next_y = c_y + (self._stepsize / 6.0) * k_parts
+        c_y = self._y_values[t]
+        k1 = h * self._function(t, c_y)
+        y1 = c_y + 0.5 * k1 * h
+        k2 = h * self._function(t + 0.5 * h, y1)
+        y2 = c_y + 0.5 * k2 * h
+        k3 = h * self._function(t + 0.5 * h, y2)
+        y3 = c_y + k3 * h
+        k4 = h * self._function(t + h, h * y3)
+        n_y = c_y + (k1 + 2 * k2 + 2 * k3 + k4) / 6.0
 
-        self._y_values.append(next_y)
-        self._t_values.append(self._t_values[self._timestep] + self._stepsize)
+        self._t_values.append(self._t_values[t] + h)
+        self._y_values.append(n_y)
 
         if isinf(self._y_values[-1]):
             raise OverflowError(
@@ -235,7 +239,7 @@ class RungeKutta4:
                 )
             )
 
-        self._timestep += self._stepsize
+        self._timestep += h
 
     def __str__(self):
         '''
@@ -301,10 +305,10 @@ if __name__ == '__main__':
     '''
     import matplotlib.pyplot as plt
 
-    rk1 = RungeKutta2(lambda x, y: 1, 0, 0)
-    rk2 = RungeKutta2(lambda x, y: y, 0, 0)
-    rk3 = RungeKutta2(lambda x, y: y, 0, 1)
-    rk4 = RungeKutta2(lambda x, y: y * y, 1, 1)
+    rk1 = RungeKutta4(lambda x, y: 1, 0, 0)
+    rk2 = RungeKutta4(lambda x, y: y, 0, 0)
+    rk3 = RungeKutta4(lambda x, y: y, 0, 1)
+    rk4 = RungeKutta4(lambda x, y: y * y, 1, 1)
 
     rk1.generate_n(10)
     rk2.generate_n(10)
@@ -312,7 +316,7 @@ if __name__ == '__main__':
     rk2.generate_n(10)
 
     fig = plt.gcf()
-    fig.suptitle("Second order Runge-Kutta", fontsize="x-large")
+    fig.suptitle("Fourth order Runge-Kutta", fontsize="x-large")
     plt.subplot(221)
     plt.plot(rk1.get_t_values(), rk1.get_y_values())
     plt.subplot(222)

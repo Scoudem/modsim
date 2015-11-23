@@ -50,7 +50,6 @@ class Euler:
         '''
         Returns the current list of values for the function at the given index
         '''
-        print self._y_values[index, :]
         return self._y_values[index, :]
 
     def generate_n(self, n):
@@ -229,7 +228,6 @@ class RungeKutta4:
         self._y_values.append(next_y)
         self._t_values.append(self._t_values[self._timestep] + self._stepsize)
 
-        print self
         if isinf(self._y_values[-1]):
             raise OverflowError(
                 "y reached infinity. Stopping generation at {}".format(
@@ -274,8 +272,11 @@ if __name__ == '__main__':
     plt.subplot(223)
     plt.plot(euler3.get_t_values(), euler3.get_y_values())
     plt.subplot(224)
+    plt.yscale('log')
     plt.plot(euler4.get_t_values(), euler4.get_y_values())
 
+    fig = plt.gcf()
+    fig.suptitle("Basic 1d Euler", fontsize="x-large")
     plt.show()
     plt.close()
 
@@ -287,6 +288,8 @@ if __name__ == '__main__':
         lambda (t, x, y): 0.5 * x - 1
     ], 0, [1, 2])
     euler6.generate_n(10)
+
+    plt.title('Vector Euler')
     plt.plot(euler6.get_t_values(), euler6.get_y_values(0), 'r')
     plt.plot(euler6.get_t_values(), euler6.get_y_values(1), 'b')
 
@@ -298,23 +301,25 @@ if __name__ == '__main__':
     '''
     import matplotlib.pyplot as plt
 
-    euler1 = RungeKutta4(lambda x, y: 1, 0, 0)
-    euler2 = RungeKutta4(lambda x, y: y, 0, 0)
-    euler3 = RungeKutta4(lambda x, y: y, 0, 1)
-    euler4 = RungeKutta4(lambda x, y: y * y, 1, 1)
+    rk1 = RungeKutta2(lambda x, y: 1, 0, 0)
+    rk2 = RungeKutta2(lambda x, y: y, 0, 0)
+    rk3 = RungeKutta2(lambda x, y: y, 0, 1)
+    rk4 = RungeKutta2(lambda x, y: y * y, 1, 1)
 
-    euler1.generate_n(10)
-    euler2.generate_n(10)
-    euler3.generate_n(5)
-    # euler4.generate_n(10)
+    rk1.generate_n(10)
+    rk2.generate_n(10)
+    rk3.generate_n(5)
+    rk2.generate_n(10)
 
+    fig = plt.gcf()
+    fig.suptitle("Second order Runge-Kutta", fontsize="x-large")
     plt.subplot(221)
-    plt.plot(euler1.get_t_values(), euler1.get_y_values())
+    plt.plot(rk1.get_t_values(), rk1.get_y_values())
     plt.subplot(222)
-    plt.plot(euler2.get_t_values(), euler2.get_y_values())
+    plt.plot(rk2.get_t_values(), rk2.get_y_values())
     plt.subplot(223)
-    plt.plot(euler3.get_t_values(), euler3.get_y_values())
-    # plt.subplot(224)
-    # plt.plot(euler4.get_t_values(), euler4.get_y_values())
+    plt.plot(rk3.get_t_values(), rk3.get_y_values())
+    plt.subplot(224)
+    plt.plot(rk4.get_t_values(), rk4.get_y_values())
 
     plt.show()

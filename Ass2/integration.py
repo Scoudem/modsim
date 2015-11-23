@@ -257,7 +257,7 @@ class RungeKutta4:
         )
 
 
-def plot(objects, xscales=[], yscales=[]):
+def plot(objects, xscales=[], yscales=[], title=""):
     '''
     Plots current state of objects in subplots
     '''
@@ -269,7 +269,9 @@ def plot(objects, xscales=[], yscales=[]):
         if i in xscales:
             plt.xscale(xscales[i])
         if i in yscales:
-            plt.yscale(yscales[i])    
+            plt.yscale(yscales[i])
+        fig = plt.gcf()
+        fig.suptitle(title, fontsize="x-large")
         plt.plot(objects[i].get_t_values(), objects[i].get_y_values())
 
 if __name__ == '__main__':
@@ -288,20 +290,8 @@ if __name__ == '__main__':
     euler3.generate_n(5)
     euler4.generate_n(10)
 
-    plot([euler1, euler2, euler3, euler4], yscales={3: 'log'})
-
-    # plt.subplot(221)
-    # plt.plot(euler1.get_t_values(), euler1.get_y_values())
-    # plt.subplot(222)
-    # plt.plot(euler2.get_t_values(), euler2.get_y_values())
-    # plt.subplot(223)
-    # plt.plot(euler3.get_t_values(), euler3.get_y_values())
-    # plt.subplot(224)
-    # plt.yscale('log')
-    # plt.plot(euler4.get_t_values(), euler4.get_y_values())
-
-    fig = plt.gcf()
-    fig.suptitle("Basic 1d Euler", fontsize="x-large")
+    plot([euler1, euler2, euler3, euler4], yscales={3: 'log'},
+         title="Basic 1d Euler")
     plt.show()
     plt.close()
 
@@ -317,7 +307,6 @@ if __name__ == '__main__':
     plt.title('Vector Euler')
     plt.plot(euler6.get_t_values(), euler6.get_y_values(0), 'r')
     plt.plot(euler6.get_t_values(), euler6.get_y_values(1), 'b')
-
     plt.show()
     plt.close()
 
@@ -336,15 +325,7 @@ if __name__ == '__main__':
     rk3.generate_n(5)
     rk4.generate_n(10)
 
-    fig = plt.gcf()
-    fig.suptitle("Fourth order Runge-Kutta", fontsize="x-large")
-    plt.subplot(221)
-    plt.plot(rk1.get_t_values(), rk1.get_y_values())
-    plt.subplot(222)
-    plt.plot(rk2.get_t_values(), rk2.get_y_values())
-    plt.subplot(223)
-    plt.plot(rk3.get_t_values(), rk3.get_y_values())
-    plt.subplot(224)
-    plt.plot(rk4.get_t_values(), rk4.get_y_values())
-
+    plot([rk1, rk2, rk3, rk4], yscales={3: 'log'},
+         title="Fourth order Runge-Kutta")
     plt.show()
+    plt.close()

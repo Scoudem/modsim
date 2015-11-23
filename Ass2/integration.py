@@ -383,7 +383,7 @@ if __name__ == '__main__':
     '''
     import matplotlib.pyplot as plt
 
-    functions = [Euler, RungeKutta2]#, RungeKutta4]
+    functions = [Euler, RungeKutta2, RungeKutta4]
     for function in functions:
         results = [
             function(lambda (t, x): 1, 0, 0),

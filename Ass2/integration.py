@@ -317,7 +317,7 @@ if __name__ == '__main__':
     rk1.generate_n(10)
     rk2.generate_n(10)
     rk3.generate_n(5)
-    rk2.generate_n(10)
+    rk4.generate_n(10)
 
     fig = plt.gcf()
     fig.suptitle("Fourth order Runge-Kutta", fontsize="x-large")

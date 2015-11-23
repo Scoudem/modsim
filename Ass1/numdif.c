@@ -57,6 +57,6 @@ int
 main(int argc, char* argv[])
 {
     test_sinus_derivative(M_PI / 3, "π/3");
-    test_sinus_derivative((100 + 1/3) * M_PI, "100π +π/3");
-    test_sinus_derivative((pow(10, 12) + 1/3) * M_PI, "10^12π +π/3");
+    test_sinus_derivative((100 + 1/3.0) * M_PI, "100π +π/3");
+    test_sinus_derivative((pow(10, 12) + 1/3.0) * M_PI, "10^12π +π/3");
 }

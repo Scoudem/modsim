@@ -104,7 +104,7 @@ class Euler:
 
 class RungeKutta2:
     '''
-    The classical Runge-Kutta method
+    The second order Runge-Kutta method
     '''
     def __init__(self, function, time, y0, stepsize=1):
         '''
@@ -147,13 +147,14 @@ class RungeKutta2:
         '''
         Generates the next value of the given function
         '''
-        current_y = self._y_values[self._timestep]
-
+        t = self._timestep
         h = self._stepsize
-        k1 = self._function(self._timestep, current_y)
-        k2 = self._function(self._timestep + (h / 2.0), current_y + (h / 2) * k1)
 
-        k_parts = k1 + 2 * k2 + 2 * k3 + k4
+        current_y = self._y_values[self._timestep]
+        k1 = self._function(t, current_y)
+        k2 = self._function(t + (h / 2.0), current_y + h * k1)
+
+        k_parts = current_y + h * ((k1 + k2) / 2)
         next_y = current_y + (self._stepsize / 6.0) * k_parts
 
         self._y_values.append(next_y)
@@ -284,7 +285,7 @@ if __name__ == '__main__':
     euler6 = Euler([
         lambda (t, x, y): 0.5 * x,
         lambda (t, x, y): 0.5 * x - 1
-        ], 0, [1, 2])
+    ], 0, [1, 2])
     euler6.generate_n(10)
     plt.plot(euler6.get_t_values(), euler6.get_y_values(0), 'r')
     plt.plot(euler6.get_t_values(), euler6.get_y_values(1), 'b')

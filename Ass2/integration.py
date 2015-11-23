@@ -224,11 +224,11 @@ class RungeKutta4:
         '''
         return self._t_values
 
-    def get_y_values(self, index=0):
+    def get_y_values(self):
         '''
         Returns the current list of values for the function at the given index
         '''
-        return self._y_values[index, :]
+        return self._y_values
 
     def generate_n(self, n):
         '''
@@ -330,7 +330,7 @@ def plot(objects, xscales={}, yscales={}, title=""):
         fig = plt.gcf()
         fig.suptitle(title, fontsize="x-large")
 
-        values = object.get_y_values()
+        values = objects[i].get_y_values()
         x, y = values.shape
         print values
         for j in range(x):
@@ -346,7 +346,7 @@ if __name__ == '__main__':
     for function in functions:
         results = [
             function(lambda (t, x): 1, 0, 0),
-            # function(lambda (t, x): x, 0, 0),
+            function(lambda (t, x): x, 0, 0),
             function(lambda (t, x): x, 0, 1),
             function(lambda (t, x): x * x, 1, 1),
             function([

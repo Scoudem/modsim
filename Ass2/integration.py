@@ -171,7 +171,7 @@ class RungeKutta2:
 
         if isinf(self._y_values[-1]):
             raise OverflowError(
-                "y reached infinity. Stopping generation at {}".format(
+                "Warning: y reached infinity. Stopped at t={}.".format(
                     self._timestep
                 )
             )
@@ -245,7 +245,7 @@ class RungeKutta4:
 
         if isinf(self._y_values[-1]):
             raise OverflowError(
-                "y reached infinity. Stopping generation at {}".format(
+                "Warning: y reached infinity. Stopped at t={}.".format(
                     self._timestep
                 )
             )
@@ -266,7 +266,8 @@ class RungeKutta4:
 
 def plot(objects, xscales=[], yscales=[], title=""):
     '''
-    Plots current state of objects in subplots
+    Plots current state of objects in subplots.
+    Define xscales and yscales as dict of indexes.
     '''
     l = len(objects)
     first = round(l / 2)
@@ -287,20 +288,22 @@ if __name__ == '__main__':
     '''
     import matplotlib.pyplot as plt
 
-    euler1 = Euler(lambda (t, x): 1, 0, 0)
-    euler2 = Euler(lambda (t, x): x, 0, 0)
-    euler3 = Euler(lambda (t, x): x, 0, 1)
-    euler4 = Euler(lambda (t, x): x * x, 1, 1)
+    functions = [RungeKutta2, RungeKutta4]
+    for function in functions:
+        results = [
+            function(lambda x, y: 1, 0, 0),
+            function(lambda x, y: y, 0, 0),
+            function(lambda x, y: y, 0, 1),
+            function(lambda x, y: y * y, 1, 1)
+        ]
 
-    euler1.generate_n(10)
-    euler2.generate_n(10)
-    euler3.generate_n(5)
-    euler4.generate_n(10)
+        for object in results:
+            object.generate_n(10)
 
-    plot([euler1, euler2, euler3, euler4], yscales={3: 'log'},
-         title="Basic 1d Euler")
-    plt.show()
-    plt.close()
+        plot(results,
+             yscales={3: 'log'}, title=function.__name__)
+        plt.show()
+        plt.close()
 
     '''
     Euler test with multiple functions
@@ -315,25 +318,5 @@ if __name__ == '__main__':
     plt.plot(euler6.get_t_values(), euler6.get_y_values(0), 'r')
     plt.plot(euler6.get_t_values(), euler6.get_y_values(1), 'b')
 
-    plt.show()
-    plt.close()
-
-    '''
-    Tests for RungeKutta4
-    '''
-    import matplotlib.pyplot as plt
-
-    rk1 = RungeKutta4(lambda x, y: 1, 0, 0)
-    rk2 = RungeKutta4(lambda x, y: y, 0, 0)
-    rk3 = RungeKutta4(lambda x, y: y, 0, 1)
-    rk4 = RungeKutta4(lambda x, y: y * y, 1, 1)
-
-    rk1.generate_n(10)
-    rk2.generate_n(10)
-    rk3.generate_n(5)
-    rk4.generate_n(10)
-
-    plot([rk1, rk2, rk3, rk4], yscales={3: 'log'},
-         title="Fourth order Runge-Kutta")
     plt.show()
     plt.close()

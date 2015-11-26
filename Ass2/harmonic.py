@@ -11,7 +11,7 @@ import integration as ig
 import matplotlib.pyplot as plt
 
 
-def harmosc():
+if __name__ == '__main__':
     '''
     s''=-ks, s'=v and v'=-ks describe a harmonic oscillator.
     Writable as s=(v^2)/2 and v=(-ks^2)/2.
@@ -41,9 +41,3 @@ def harmosc():
         plt.scatter(result.get_y_values()[0], result.get_y_values()[1])
 
         plt.show()
-
-if __name__ == '__main__':
-    '''
-    Tests
-    '''
-    harmosc()

@@ -39,3 +39,6 @@ root2
 
 # BS
 *.tbzs
+
+# Compiled python files
+*.pyc

@@ -23,9 +23,12 @@ if __name__ == '__main__':
     it = lambda (t, s, e, i, r): sigma * e - (mu + gamma) * i
     rt = lambda (t, s, e, i, r): gamma * i - mu * r + nu * s
 
-    m = ig.RungeKutta4([st, et, it, rt], 0, [999, 1, 0, 0], stepsize=0.01)
-    m.generate_n(10000)
+    m = ig.RungeKutta4([st, et, it, rt], 0, [999, 1, 0, 0], stepsize=1)
+    m.generate_n(100)
 
+    plt.title('SEIR with S=999, E=1, I=0, R=0 over 100 days')
+    plt.xlabel('day')
+    plt.ylabel('number in category')
     plt.plot(m.get_y_values()[0], label="S")
     plt.plot(m.get_y_values()[1], label="E")
     plt.plot(m.get_y_values()[2], label="I")

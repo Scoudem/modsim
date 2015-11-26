@@ -25,7 +25,8 @@ def lotke_volterra(functions, startvalues, dts, generations):
             m.generate_n(generations)
 
         fig = plt.gcf()
-        fig.suptitle('Lotka-Volterra with dt:{} ({} timesteps)'.format(dt, generations), fontsize="x-large")
+        title = 'Lotka-Volterra with dt:{} ({} timesteps)'.format(dt, generations)
+        fig.suptitle(title, fontsize="x-large")
         olen = len(objects)
 
         ''' Make plots for each set of startvalues '''

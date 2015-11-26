@@ -182,63 +182,10 @@ class RungeKutta2(IntegrationTechnique):
         )
 
 
-class RungeKutta4:
+class RungeKutta4(IntegrationTechnique):
     '''
     The classical Runge-Kutta method
     '''
-    def __init__(self, functions, time, y0, stepsize=1):
-        '''
-        Constructor, takes functions, initial timestep, initial y values.
-        Optional: stepsize
-        '''
-        if time < 0:
-            raise ValueError('Time should be equal or greater than 0')
-        if stepsize <= 0:
-            raise ValueError('Stepsize should be greater than 0')
-
-        if not isinstance(functions, list):
-            functions = [functions]
-        if not isinstance(y0, list):
-            y0 = [y0]
-        if len(y0) != len(functions):
-            raise ValueError('Amount of functions should be equal to amount ' +
-                             'of initial values')
-
-        for f in functions:
-            if not isinstance(f, type(lambda: 0)):
-                raise ValueError('Given variable is not a lambda or function')
-
-        for v in y0:
-            if not isinstance(v, numbers.Real):
-                raise ValueError('Initial values should be real numbers')
-
-        self._functions = functions
-        self._timestep = 0
-        self._t_values = [time]
-        self._y_values = np.swapaxes(np.array(y0, ndmin=2), 0, 1)
-        self._stepsize = stepsize
-
-    def get_t_values(self):
-        '''
-        Returns the current list of t values
-        '''
-        return self._t_values
-
-    def get_y_values(self):
-        '''
-        Returns the current list of values for the function at the given index
-        '''
-        return self._y_values
-
-    def generate_n(self, n):
-        '''
-        Generates the next n values of the given function
-        '''
-        try:
-            for n in range(n):
-                self.get_next()
-        except OverflowError, e:
-            print e
 
     def get_next(self):
         '''
@@ -251,36 +198,32 @@ class RungeKutta4:
 
         # k1 = self._function(t, c_y)
         k1_args = tuple([self._t_values[t]]
-                      + y_values)
+                        + y_values)
         k1 = []
         for function in self._functions:
             k1.append(function(k1_args))
 
-        # y1 = c_y + 0.5 * k1 * h
-        # k2 = self._function(t + 0.5 * h, y1)
         k2_args = tuple([self._t_values[t] + (h / 2.0)]
-                      + [current_y + 0.5 * h*k1[i] for i, current_y in enumerate(y_values)])
+                        + [current_y + 0.5 * h * k1[i]
+                        for i, current_y in enumerate(y_values)])
         k2 = []
         for function in self._functions:
             k2.append(function(k2_args))
 
-        # y2 = c_y + 0.5 * k2 * h
-        # k3 = self._function(t + 0.5 * h, y2)
         k3_args = tuple([self._t_values[t] + (h / 2.0)]
-                      + [current_y + 0.5 * h*k2[i] for i, current_y in enumerate(y_values)])
+                        + [current_y + 0.5 * h * k2[i]
+                        for i, current_y in enumerate(y_values)])
         k3 = []
         for function in self._functions:
             k3.append(function(k3_args))
 
-        # y3 = c_y + k3 * h
-        # k4 = self._function(t + h, y3)
         k4_args = tuple([self._t_values[t] + h]
-                      + [current_y + h*k3[i] for i, current_y in enumerate(y_values)])
+                        + [current_y + h * k3[i]
+                        for i, current_y in enumerate(y_values)])
         k4 = []
         for function in self._functions:
             k4.append(function(k4_args))
 
-        # n_y = c_y + (k1 + 2 * k2 + 2 * k3 + k4) / 6.0
         an = []
         for i, current_y in enumerate(y_values):
             k_parts = k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i]
@@ -300,17 +243,6 @@ class RungeKutta4:
         self._t_values.append(self._t_values[t] + h)
 
         self._timestep += 1
-
-    def __str__(self):
-        '''
-        Returns a string containing all variables
-        '''
-        return "Current timestep: {}.\nStepsize: {}.\nx: {}.\ny: {}.".format(
-            self._timestep,
-            self._stepsize,
-            self._t_values,
-            self._y_values
-        )
 
 
 def plot(objects, xscales={}, yscales={}, title=""):
@@ -332,7 +264,7 @@ def plot(objects, xscales={}, yscales={}, title=""):
 
         values = objects[i].get_y_values()
         x, y = values.shape
-        print values
+
         for j in range(x):
             plt.plot(objects[i].get_t_values(), values[j, :])
 

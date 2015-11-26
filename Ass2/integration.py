@@ -140,20 +140,19 @@ class RungeKutta2(IntegrationTechnique):
         k1 = []
 
         for function in self._functions:
-            k1.append(function(k1_args))
+            k1.append(h * function(k1_args))
 
         k2_args = tuple(
             [self._t_values[t] + (h / 2.0)] +
-            [current_y + h * k1[i] for i, current_y in enumerate(y_values)])
+            [current_y + 0.5 * k1[i] for i, current_y in enumerate(y_values)])
         k2 = []
 
         for function in self._functions:
-            k2.append(function(k2_args))
+            k2.append(h * function(k2_args))
 
         an = []
         for i, current_y in enumerate(y_values):
-            k_parts = current_y + h * ((k1[i] + k2[i]) / 2)
-            next_y = current_y + (h / 6.0) * k_parts
+            next_y = current_y + k2[i]
             an.append(next_y)
 
             if isinf(next_y):

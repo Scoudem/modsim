@@ -6,10 +6,10 @@ Authors:
 
 Contains a Lotka-Volterra Model which is simulated using the RK4 method.
 '''
-from integration import RungeKutta4, Euler
+from integration import RungeKutta4
 import matplotlib.pyplot as plt
 
-startvalues = [[11, 49], [1, 20]]
+startvalues = [[11.0, 49.0], [1.0, 20.0]]
 #startvalues = [[1, 20]]
 objects = []
 
@@ -20,7 +20,7 @@ for i,startvalue in enumerate(startvalues):
     ], 0, startvalue, stepsize=0.1))
 
 for i, result in enumerate(objects):
-    result.generate_n(2000)
+    result.generate_n(1200)
 
 fig = plt.gcf()
 fig.suptitle('Lotka-Volterra', fontsize="x-large")

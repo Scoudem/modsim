@@ -246,33 +246,40 @@ class RungeKutta4(IntegrationTechnique):
 
 
 def plot(objects, xscales={}, yscales={}, title=""):
+    from matplotlib.pyplot import plot, show, close, subplot,\
+        xscale, yscale, gcf
     '''
     Plots current state of objects in subplots.
     Define xscales and yscales as dict of indexes.
     '''
+    if not isinstance(objects, list):
+            objects = [objects]
+
     l = len(objects)
-    first = l / 2 + 1
-    second = l / 2
+    first = round(l / 2.0) + 1
+    second = round(l / 2.0)
     for i in range(0, l):
-        plt.subplot(first, second, i + 1)
+        subplot(first, second, i + 1)
         if i in xscales:
-            plt.xscale(xscales[i])
+            xscale(xscales[i])
         if i in yscales:
-            plt.yscale(yscales[i])
-        fig = plt.gcf()
+            yscale(yscales[i])
+        fig = gcf()
         fig.suptitle(title, fontsize="x-large")
 
         values = objects[i].get_y_values()
         x, y = values.shape
 
         for j in range(x):
-            plt.plot(objects[i].get_t_values(), values[j, :])
+            plot(objects[i].get_t_values(), values[j, :])
+
+    show()
+    close()
 
 if __name__ == '__main__':
     '''
-    Tests for Euler
+    Tests for integration techniques
     '''
-    import matplotlib.pyplot as plt
 
     functions = [Euler, RungeKutta2, RungeKutta4]
     for function in functions:
@@ -292,5 +299,3 @@ if __name__ == '__main__':
 
         plot(results,
              yscales={3: 'log'}, title=function.__name__)
-        plt.show()
-        plt.close()

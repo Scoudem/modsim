@@ -227,7 +227,7 @@ class RungeKutta4(IntegrationTechnique):
         an = []
         for i, current_y in enumerate(y_values):
             k_parts = k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i]
-            next_y = current_y + k_parts / 6.0
+            next_y = current_y + k_parts / 6.0 * h
             an.append(next_y)
 
             if isinf(next_y):

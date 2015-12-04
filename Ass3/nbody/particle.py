@@ -9,8 +9,10 @@ Authors:
 class Particle:
     '''
     '''
-    def __init__(self, mass):
+    def __init__(self, mass, pos, vel):
         self.mass = mass
+        self.x, self.y, self.z = pos,
+        self.vx, self.vy, self.vz = vel,
 
     def __str__(self):
         str = 'mass: {}\n'.format(self.mass)

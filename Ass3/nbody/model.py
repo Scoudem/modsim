@@ -21,6 +21,12 @@ class Model:
         '''
         self.particles = []
         self.timestep = 0
+        self.dt = 0.01
+
+    def set_dt(self, dt):
+        '''
+        '''
+        self.dt = dt
 
     def add_particle(self, mass, pos, vel):
         '''
@@ -53,8 +59,8 @@ class Model:
             self.update_particle(particle)
 
         for particle in self.particles:
-            particle.update_pos(0.1)
-            particle.update_vel(0.1)
+            particle.update_pos(self.dt)
+            particle.update_vel(self.dt)
 
         print self
 

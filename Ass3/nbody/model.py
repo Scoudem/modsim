@@ -92,19 +92,23 @@ class Model:
 
             upper = self.G * p2.mass * (p2.pos - p1.pos)
             lower = np.abs(p2.pos - p1.pos) ** 3
-            print upper, lower
             a += np.asarray(upper) / np.asarray(lower)
 
         p1.acc = a
 
     def plot(self):
+        '''
+        Plot the particles and their paths
+        '''
         import matplotlib.pyplot as plt
         fig = plt.gcf()
+        # TODO: don't hard-code the length of axis?
         plt.xlim((0, 30))
         plt.ylim((0, 30))
         for particle in self.particles:
+            path = particle.path
+            plt.plot(path[:, 0][0], path[:, 1][0], 'r--')
             circle = plt.Circle(particle.pos, math.log(particle.mass) / 10)
-            print circle
             fig.gca().add_artist(circle)
         plt.show()
 

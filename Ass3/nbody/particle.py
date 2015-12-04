@@ -16,9 +16,12 @@ class Particle:
         self.pos = np.asarray(pos, dtype='float64')
         self.vel = np.asarray(vel, dtype='float64')
         self.acc = np.zeros(len(pos), dtype='float64')
+        self.path = np.asarray(pos, dtype='float64')
 
     def update_pos(self, dt):
         self.pos += self.vel * dt
+        # should we still add it if the position remains the same?
+        self.path = np.dstack((self.path, self.pos))
 
     def update_vel(self, dt):
         self.vel += self.acc * dt

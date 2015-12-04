@@ -7,13 +7,14 @@ Authors:
 
 import numpy as np
 import particle as pc
+import math
 
 
 class Model:
     '''
     '''
 
-    G = 6.67408 * 10 ** 11
+    G = 6.67408 * 10 ** -11
 
     def __init__(self):
         '''
@@ -52,8 +53,8 @@ class Model:
             self.update_particle(particle)
 
         for particle in self.particles:
-            particle.update_pos(0.00001)
-            particle.update_vel(0.00001)
+            particle.update_pos(0.1)
+            particle.update_vel(0.1)
 
         print self
 
@@ -85,9 +86,21 @@ class Model:
 
             upper = self.G * p2.mass * (p2.pos - p1.pos)
             lower = np.abs(p2.pos - p1.pos) ** 3
+            print upper, lower
             a += np.asarray(upper) / np.asarray(lower)
 
         p1.acc = a
+
+    def plot(self):
+        import matplotlib.pyplot as plt
+        fig = plt.gcf()
+        plt.xlim((0, 30))
+        plt.ylim((0, 30))
+        for particle in self.particles:
+            circle = plt.Circle(particle.pos, math.log(particle.mass) / 10)
+            print circle
+            fig.gca().add_artist(circle)
+        plt.show()
 
     def __str__(self):
         string = 'Timestep: {}\n'.format(self.timestep)

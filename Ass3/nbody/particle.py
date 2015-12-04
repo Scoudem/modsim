@@ -5,14 +5,16 @@ Authors:
  - Tristan van Vaalen, 10551832
 '''
 
+import numpy as np
+
 
 class Particle:
     '''
     '''
     def __init__(self, mass, pos, vel):
         self.mass = mass
-        self.x, self.y, self.z = pos,
-        self.vx, self.vy, self.vz = vel,
+        self.pos = np.asarray(pos)
+        self.vel = np.asarray(vel)
 
     def __str__(self):
         str = 'mass: {}\n'.format(self.mass)

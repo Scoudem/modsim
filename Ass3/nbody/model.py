@@ -5,10 +5,15 @@ Authors:
  - Tristan van Vaalen, 10551832
 '''
 
+import numpy as np
+import particle as pc
+
 
 class Model:
     '''
     '''
+
+    G = 6.67408 * 10 ** 11
 
     def __init__(self):
         '''
@@ -18,19 +23,39 @@ class Model:
     def add_particle(self, particle):
         '''
         '''
-        pass
+        self.particles.append(particle)
 
-    def remove_particle(self, particle):
+    def remove_particle(self, index):
         '''
         '''
-        pass
-
-    def update_particle(self, particle):
-        '''
-        '''
-        pass
+        self.particles.remove(index)
 
     def update_all_particles(self):
         '''
         '''
-        pass
+        for particle in self.particles:
+            self.update_particle(particle)
+
+    def update_particle(self, particle):
+        '''
+        '''
+        self.compute_f(particle)
+        self.compute_a(particle)
+
+    def compute_f(self, p1):
+        '''
+        '''
+        f = np.zeros(3)
+        for p2 in self.particles:
+            upper = self.G * (p1.mass * p2.mass) * (p2.pos - p1.pos)
+            lower = np.linalg.norm((p2.pos - p1.pos)) ** 3
+            f += upper / lower
+
+    def compute_a(self, p1):
+        '''
+        '''
+        a = np.zeros(3)
+        for p2 in self.particles:
+            upper = self.G * p2.mass * (p2.pos - p1.pos)
+            lower = np.linalg.norm((p2.pos - p1.pos)) ** 3
+            a += upper / lower

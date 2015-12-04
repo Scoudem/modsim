@@ -13,9 +13,18 @@ class Particle:
     '''
     def __init__(self, mass, pos, vel):
         self.mass = mass
-        self.pos = np.asarray(pos)
-        self.vel = np.asarray(vel)
+        self.pos = np.asarray(pos, dtype='float64')
+        self.vel = np.asarray(vel, dtype='float64')
+        self.acc = np.zeros(len(pos), dtype='float64')
+
+    def update_pos(self, dt):
+        self.pos += self.vel * dt
+
+    def update_vel(self, dt):
+        self.vel += self.acc * dt
 
     def __str__(self):
-        string = 'Particle{}@(R:{})(V:{})'.format(self.mass, self.pos, self.vel)
+        string = 'Particle@(M:{})(R:{})(V:{})'.format(
+            self.mass, self.pos, self.vel
+        )
         return string

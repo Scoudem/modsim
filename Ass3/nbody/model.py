@@ -32,16 +32,30 @@ class Model:
         '''
         self.particles.remove(index)
 
+    def next_n_timesteps(self, timesteps):
+        '''
+        '''
+        for t in range(timesteps):
+            self.next_timestep()
+
     def next_timestep(self):
         '''
         '''
-        pass
+        self.update_all_particles()
+        # draw
+        self.timestep += 1
 
     def update_all_particles(self):
         '''
         '''
         for particle in self.particles:
             self.update_particle(particle)
+
+        for particle in self.particles:
+            particle.update_pos(0.00001)
+            particle.update_vel(0.00001)
+
+        print self
 
     def update_particle(self, particle):
         '''
@@ -52,20 +66,28 @@ class Model:
     def compute_f(self, p1):
         '''
         '''
-        f = np.zeros(3)
+        f = np.zeros(2)
         for p2 in self.particles:
+            if p1 is p2:
+                continue
+
             upper = self.G * (p1.mass * p2.mass) * (p2.pos - p1.pos)
-            lower = np.linalg.norm((p2.pos - p1.pos)) ** 3
-            f += upper / lower
+            lower = np.abs(p2.pos - p1.pos) ** 3
+            f += np.asarray(upper) / np.asarray(lower)
 
     def compute_a(self, p1):
         '''
         '''
-        a = np.zeros(3)
+        a = np.zeros(2)
         for p2 in self.particles:
+            if p1 is p2:
+                continue
+
             upper = self.G * p2.mass * (p2.pos - p1.pos)
-            lower = np.linalg.norm((p2.pos - p1.pos)) ** 3
-            a += upper / lower
+            lower = np.abs(p2.pos - p1.pos) ** 3
+            a += np.asarray(upper) / np.asarray(lower)
+
+        p1.acc = a
 
     def __str__(self):
         string = 'Timestep: {}\n'.format(self.timestep)

@@ -19,16 +19,23 @@ class Model:
         '''
         '''
         self.particles = []
+        self.timestep = 0
 
-    def add_particle(self, particle):
+    def add_particle(self, mass, pos, vel):
         '''
         '''
+        particle = pc.Particle(mass, pos, vel)
         self.particles.append(particle)
 
     def remove_particle(self, index):
         '''
         '''
         self.particles.remove(index)
+
+    def next_timestep(self):
+        '''
+        '''
+        pass
 
     def update_all_particles(self):
         '''
@@ -59,3 +66,9 @@ class Model:
             upper = self.G * p2.mass * (p2.pos - p1.pos)
             lower = np.linalg.norm((p2.pos - p1.pos)) ** 3
             a += upper / lower
+
+    def __str__(self):
+        string = 'Timestep: {}\n'.format(self.timestep)
+        for particle in self.particles:
+            string += str(particle) + '\n'
+        return string

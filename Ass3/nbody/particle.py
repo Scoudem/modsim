@@ -17,5 +17,5 @@ class Particle:
         self.vel = np.asarray(vel)
 
     def __str__(self):
-        str = 'mass: {}\n'.format(self.mass)
-        return str
+        string = 'Particle{}@(R:{})(V:{})'.format(self.mass, self.pos, self.vel)
+        return string

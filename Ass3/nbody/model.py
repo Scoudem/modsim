@@ -8,6 +8,7 @@ Authors:
 import numpy as np
 import particle as pc
 import math
+from scipy.spatial import distance
 
 
 class Model:
@@ -79,7 +80,7 @@ class Model:
                 continue
 
             upper = self.G * (p1.mass * p2.mass) * (p2.pos - p1.pos)
-            lower = np.abs(p2.pos - p1.pos) ** 3
+            lower = distance.euclidean(p2.pos, p1.pos) ** 3
             f += np.asarray(upper) / np.asarray(lower)
 
     def compute_a(self, p1):
@@ -91,7 +92,7 @@ class Model:
                 continue
 
             upper = self.G * p2.mass * (p2.pos - p1.pos)
-            lower = np.abs(p2.pos - p1.pos) ** 3
+            lower = distance.euclidean(p2.pos, p1.pos) ** 3
             a += np.asarray(upper) / np.asarray(lower)
 
         p1.acc = a

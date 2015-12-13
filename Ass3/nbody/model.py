@@ -26,6 +26,7 @@ class Model:
         self.particles = []
         self.timestep = 0
         self.dt = 0.01
+        self.time = 0.0
         self.size = None
         self.plots = None
         self.circles = []
@@ -74,6 +75,8 @@ class Model:
     def update_all_particles(self):
         '''
         '''
+
+        # this computes a(t) and dt
         dts = 0
         for particle in self.particles:
             dist = self.update_particle(particle)
@@ -81,10 +84,20 @@ class Model:
             dts += vel / dist
 
         self.set_dt(dts / (len(self.particles) + 1))
+        self.time += self.dt
+
+        # Advance r(t) to r + dt using terms up to a(t)
+        for particle in self.particles:
+            particle.advance_pos(self.time)
 
         for particle in self.particles:
-            particle.update_pos(self.dt)
-            particle.update_vel(self.dt)
+            # compute a(t + dt) and set acc_prev to a(t)
+            self.compute_a(particle, True)
+            # estimate j(t + 0.5 dt)
+            particle.estimate_jerk(self.dt)
+            # first compute v(t + dt) and then compute r(t + dt)
+            # (r uses v(t + dt) and a(t + dt) and j(t + 0.5 dt))
+            particle.compute_pos(self.time)
 
     def update_particle(self, particle):
         '''
@@ -104,7 +117,7 @@ class Model:
             lower = distance.euclidean(p2.pos, p1.pos) ** 3
             f += np.asarray(upper) / np.asarray(lower)
 
-    def compute_a(self, p1):
+    def compute_a(self, p1, update_prev=False):
         '''
         '''
         dists = 0
@@ -121,7 +134,7 @@ class Model:
             lower = dist ** 3
             a += np.asarray(upper) / np.asarray(lower)
 
-        p1.acc = a
+        p1.set_acc(a, update_prev)
 
         return dists / (len(self.particles) - 1)
 

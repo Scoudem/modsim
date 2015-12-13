@@ -24,5 +24,5 @@ if __name__ == '__main__':
 
     model.generate_random(3)
 
-    model.next_n_timesteps(10000)
+    model.next_n_timesteps(100)
     model.plot(drawpath=True, autoscale=False)

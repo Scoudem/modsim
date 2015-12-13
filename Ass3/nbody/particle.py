@@ -14,19 +14,52 @@ class Particle:
     '''
     def __init__(self, mass, pos, vel):
         self.mass = mass
+        self.startpos = np.asarray(pos, dtype='float64')
         self.pos = np.asarray(pos, dtype='float64')
+        self.startvel = np.asarray(vel, dtype='float64')
         self.vel = np.asarray(vel, dtype='float64')
         self.acc = np.zeros(len(pos), dtype='float64')
+        self.acc_prev = np.zeros(len(pos), dtype='float64')
+        self.jerk = np.zeros(len(pos), dtype='float64')
         self.path = np.asarray(pos, dtype='float64')
         self.circle = None
 
-    def update_pos(self, dt):
-        self.pos += self.vel * dt
-        # should we still add it if the position remains the same?
+    def advance_pos(self, time):
+        pos = self.startpos
+        pos += self.vel * time
+        pos += self.acc * time ** 2 / 2
+        self.set_current_pos(pos)
+
+    def compute_pos(self, time):
+        self.compute_vel(time)
+        pos = self.startpos
+        pos += self.vel * time
+        pos += self.acc * time ** 2 / 2
+        pos += self.jerk * time ** 3 / 6
+        self.set_pos(pos)
+
+    def compute_vel(self, time):
+        vel = self.startvel
+        vel += self.acc * time
+        vel += self.jerk * time ** 2 / 2
+        self.vel = vel
+
+    def estimate_jerk(self, dt):
+        self.jerk = (self.acc - self.acc_prev) / dt
+
+    def set_acc(self, acc, update_prev):
+        if update_prev:
+            self.prev_acc = acc
+        self.acc = acc
+
+    def set_pos(self, pos):
+        ''' Set position and add it to the path '''
+        self.pos = pos
         self.path = np.dstack((self.path, self.pos))
 
-    def update_vel(self, dt):
-        self.vel += self.acc * dt
+    def set_current_pos(self, pos):
+        ''' Set position without adding it to the path '''
+        self.pos = pos
 
     def get_path_x(self, i):
         return self.path[0][0][i]

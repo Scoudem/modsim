@@ -127,7 +127,7 @@ class Model:
 
     def generate_random(self, n):
         for i in range(n):
-            mass = 10 ** (10 + rd.uniform(-2, 2))
+            mass = 10 ** (10 + rd.uniform(-3, 3))
             position = [
                 rd.randint(self.size[0], self.size[1]),
                 rd.randint(self.size[0], self.size[1])

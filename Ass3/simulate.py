@@ -22,7 +22,7 @@ if __name__ == '__main__':
     model.set_dt(0.1)
     model.set_size((-30, 30))
 
-    model.generate_random(5)
+    model.generate_random(3)
 
     model.next_n_timesteps(10000)
     model.plot(drawpath=True, autoscale=False)

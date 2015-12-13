@@ -7,8 +7,9 @@ Authors:
 
 import numpy as np
 import particle as pc
-import math
 from scipy.spatial import distance
+import matplotlib.pyplot as plt
+import matplotlib.animation as anm
 
 
 class Model:
@@ -23,11 +24,19 @@ class Model:
         self.particles = []
         self.timestep = 0
         self.dt = 0.01
+        self.size = None
+        self.plots = None
+        self.circles = []
 
     def set_dt(self, dt):
         '''
         '''
         self.dt = dt
+
+    def set_size(self, size):
+        '''
+        '''
+        self.size = size
 
     def add_particle(self, mass, pos, vel):
         '''
@@ -63,8 +72,6 @@ class Model:
             particle.update_pos(self.dt)
             particle.update_vel(self.dt)
 
-        print self
-
     def update_particle(self, particle):
         '''
         '''
@@ -97,21 +104,40 @@ class Model:
 
         p1.acc = a
 
-    def plot(self):
+    def plot(self, animated=True):
         '''
         Plot the particles and their paths
         '''
-        import matplotlib.pyplot as plt
-        fig = plt.gcf()
-        # TODO: don't hard-code the length of axis?
-        plt.xlim((0, 30))
-        plt.ylim((0, 30))
+
+        fig = plt.figure()
+        self.ax = plt.axes(xlim=(-100, 100), ylim=(-100, 100))
+
         for particle in self.particles:
             path = particle.path
-            plt.plot(path[:, 0][0], path[:, 1][0], 'r--')
-            circle = plt.Circle(particle.pos, math.log(particle.mass) / 10)
-            fig.gca().add_artist(circle)
+            self.ax.plot(path[:, 0][0], path[:, 1][0], '--')
+
+            if animated:
+                c = plt.Circle(([], []), particle.get_mass_plotable())
+                c.center = particle.get_path_at(0)
+
+                self.circles.append(c)
+
+        self.anim = anm.FuncAnimation(
+            fig, self.animate, init_func=self.init_animation,
+            frames=self.timestep, interval=1, blit=True
+        )
+
         plt.show()
+
+    def init_animation(self):
+        for circle in self.circles:
+            self.ax.add_patch(circle)
+        return self.circles
+
+    def animate(self, i):
+        for item in zip(self.circles, self.particles):
+            item[0].center = item[1].get_path_at(i)
+        return self.circles
 
     def __str__(self):
         string = 'Timestep: {}\n'.format(self.timestep)

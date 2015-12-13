@@ -115,11 +115,11 @@ class Model:
         for i in range(n):
             mass = 10 ** rd.randint(1, 20)
             position = [rd.randint(-100, 100), rd.randint(-100, 100)]
-            velocity = [rd.uniform(0.0, 0.2), rd.uniform(0.0, 0.2)]
+            velocity = [rd.uniform(-1, 1), rd.uniform(-1, 1)]
             self.add_particle(mass, position, velocity)
             print self.particles[-1]
 
-    def plot(self, animated=True):
+    def plot(self, drawpath=True, autoscale=False, animated=True):
         '''
         Plot the particles and their paths
         '''
@@ -127,14 +127,15 @@ class Model:
         fig = plt.figure()
         self.ax = plt.axes()
 
-        self.ax.set_xlim(self.size, auto=False)
-        self.ax.set_ylim(self.size, auto=False)
+        self.ax.set_xlim(self.size, auto=autoscale)
+        self.ax.set_ylim(self.size, auto=autoscale)
 
         # self.ax.axis('equal')
 
         for particle in self.particles:
-            path = particle.path
-            self.ax.plot(path[:, 0][0], path[:, 1][0], '--')
+            if drawpath:
+                path = particle.path
+                self.ax.plot(path[:, 0][0], path[:, 1][0], '--')
 
             if animated:
                 c = plt.Circle(

@@ -58,7 +58,7 @@ class Model:
             timesteps, len(self.particles)
         ))
         for t in range(timesteps):
-            sys.stdout.write('\r{}/{}...'.format(t + 1, timesteps))
+            sys.stdout.write('\r{}/{}. dt={}...'.format(t + 1, timesteps, self.dt))
             self.next_timestep()
         print(' done.\nPlotting...')
 
@@ -72,8 +72,16 @@ class Model:
     def update_all_particles(self):
         '''
         '''
+        dts = 0
         for particle in self.particles:
-            self.update_particle(particle)
+            dist = self.update_particle(particle)
+            vel = np.mean(np.abs(particle.vel))
+            dts += vel / dist
+            # print 'Particle state:\n - dist: {}\n - vel: {}\n - dts: {}'.format(dist, vel, dts)
+
+        # print dts
+
+        self.set_dt(dts / (len(self.particles) + 1))
 
         for particle in self.particles:
             particle.update_pos(self.dt)
@@ -82,8 +90,8 @@ class Model:
     def update_particle(self, particle):
         '''
         '''
-        self.compute_f(particle)
-        self.compute_a(particle)
+        # self.compute_f(particle)
+        return self.compute_a(particle)
 
     def compute_f(self, p1):
         '''
@@ -100,16 +108,23 @@ class Model:
     def compute_a(self, p1):
         '''
         '''
+        dists = 0
+
         a = np.zeros(2)
         for p2 in self.particles:
             if p1 is p2:
                 continue
 
+            dist = distance.euclidean(p2.pos, p1.pos)
+            dists += dist
+
             upper = self.G * p2.mass * (p2.pos - p1.pos)
-            lower = distance.euclidean(p2.pos, p1.pos) ** 3
+            lower = dist ** 3
             a += np.asarray(upper) / np.asarray(lower)
 
         p1.acc = a
+
+        return dists / (len(self.particles) - 1)
 
     def generate_random(self, n):
         for i in range(n):

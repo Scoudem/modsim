@@ -199,6 +199,7 @@ class Model:
 
     def init_animation(self):
         for circle in self.circles:
+            circle.set_visible(False)
             self.ax.add_patch(circle)
         return self.circles
 

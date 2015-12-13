@@ -20,9 +20,9 @@ if __name__ == '__main__':
     # # model.add_particle(10 ** 2, [-30, -50], [0.05, 0.03])
 
     model.set_dt(0.1)
-    model.set_size((-50, 50))
+    model.set_size((-100, 100))
 
     model.generate_random(3)
 
-    model.next_n_timesteps(10000)
+    model.next_n_timesteps(5000)
     model.plot(drawpath=True, autoscale=False)

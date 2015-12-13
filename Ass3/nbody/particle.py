@@ -19,6 +19,8 @@ class Particle:
         self.acc = np.zeros(len(pos), dtype='float64')
         self.path = np.asarray(pos, dtype='float64')
         self.circle = None
+        self.active = True
+        self.deathtime = -1
 
     def update_pos(self, dt):
         self.pos += self.vel * dt
@@ -35,6 +37,9 @@ class Particle:
         return self.path[0][1][i]
 
     def get_path_at(self, i):
+        if i >= len(self.path[0][0]):
+            i = -1
+
         return (self.get_path_x(i), self.get_path_y(i))
 
     def get_mass_plotable(self):

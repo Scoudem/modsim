@@ -18,7 +18,3 @@ if __name__ == '__main__':
 
     model.next_n_timesteps(10000)
     model.plot()
-    # timesteps = 10
-    # for t in range(timesteps):
-    #     model.next_timestep()
-    #     model.plot()

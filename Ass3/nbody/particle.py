@@ -51,7 +51,7 @@ class Particle:
 
     def set_acc(self, acc, update_prev):
         if update_prev:
-            self.prev_acc = acc
+            self.acc_prev = acc
         self.acc = acc
 
     def set_pos(self, pos):

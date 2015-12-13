@@ -5,11 +5,13 @@ Authors:
  - Tristan van Vaalen, 10551832
 '''
 
+import random as rd
 import numpy as np
 import particle as pc
 from scipy.spatial import distance
 import matplotlib.pyplot as plt
 import matplotlib.animation as anm
+import sys
 
 
 class Model:
@@ -52,8 +54,13 @@ class Model:
     def next_n_timesteps(self, timesteps):
         '''
         '''
+        print('Simulating {} timesteps with {} particles...'.format(
+            timesteps, len(self.particles)
+        ))
         for t in range(timesteps):
+            sys.stdout.write('\r{}/{}...'.format(t + 1, timesteps))
             self.next_timestep()
+        print(' done.\nPlotting...')
 
     def next_timestep(self):
         '''
@@ -104,22 +111,36 @@ class Model:
 
         p1.acc = a
 
+    def generate_random(self, n):
+        for i in range(n):
+            mass = 10 ** rd.randint(1, 20)
+            position = [rd.randint(-100, 100), rd.randint(-100, 100)]
+            velocity = [rd.uniform(0.0, 0.2), rd.uniform(0.0, 0.2)]
+            self.add_particle(mass, position, velocity)
+            print self.particles[-1]
+
     def plot(self, animated=True):
         '''
         Plot the particles and their paths
         '''
 
         fig = plt.figure()
-        self.ax = plt.axes(xlim=(-100, 100), ylim=(-100, 100))
+        self.ax = plt.axes()
+
+        self.ax.set_xlim(self.size, auto=False)
+        self.ax.set_ylim(self.size, auto=False)
+
+        # self.ax.axis('equal')
 
         for particle in self.particles:
             path = particle.path
             self.ax.plot(path[:, 0][0], path[:, 1][0], '--')
 
             if animated:
-                c = plt.Circle(([], []), particle.get_mass_plotable())
+                c = plt.Circle(
+                    ([], []), particle.get_mass_plotable(), visible=False
+                )
                 c.center = particle.get_path_at(0)
-
                 self.circles.append(c)
 
         self.anim = anm.FuncAnimation(
@@ -128,6 +149,7 @@ class Model:
         )
 
         plt.show()
+        print(' done.')
 
     def init_animation(self):
         for circle in self.circles:
@@ -137,6 +159,9 @@ class Model:
     def animate(self, i):
         for item in zip(self.circles, self.particles):
             item[0].center = item[1].get_path_at(i)
+            item[0].set_visible(True)
+
+            sys.stdout.write('\rTimestep {}/{}...'.format(i + 1, self.timestep))
         return self.circles
 
     def __str__(self):

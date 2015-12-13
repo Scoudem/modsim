@@ -16,6 +16,7 @@ class Particle:
         self.mass = mass
         self.startpos = np.asarray(pos, dtype='float64')
         self.pos = np.asarray(pos, dtype='float64')
+        self.pos_prev = np.asarray(pos, dtype='float64')
         self.startvel = np.asarray(vel, dtype='float64')
         self.vel = np.asarray(vel, dtype='float64')
         self.acc = np.zeros(len(pos), dtype='float64')
@@ -26,24 +27,24 @@ class Particle:
         self.active = True
         self.deathtime = -1
 
-    def advance_pos(self, time):
-        pos = self.startpos
-        pos += self.vel * time
-        pos += self.acc * time ** 2 / 2
+    def advance_pos(self, dt):
+        pos = self.pos_prev
+        pos += self.vel * dt
+        pos += self.acc * dt ** 2 / 2
         self.set_current_pos(pos)
 
-    def compute_pos(self, time):
-        self.compute_vel(time)
-        pos = self.startpos
-        pos += self.vel * time
-        pos += self.acc * time ** 2 / 2
-        pos += self.jerk * time ** 3 / 6
+    def compute_pos(self, dt):
+        self.compute_vel(dt)
+        pos = self.pos_prev
+        pos += self.vel * dt
+        pos += self.acc * dt ** 2 / 2
+        pos += self.jerk * dt ** 3 / 6
         self.set_pos(pos)
 
-    def compute_vel(self, time):
-        vel = self.startvel
-        vel += self.acc * time
-        vel += self.jerk * time ** 2 / 2
+    def compute_vel(self, dt):
+        vel = self.vel
+        vel += self.acc * dt
+        vel += self.jerk * dt ** 2 / 2
         self.vel = vel
 
     def estimate_jerk(self, dt):
@@ -61,6 +62,7 @@ class Particle:
 
     def set_current_pos(self, pos):
         ''' Set position without adding it to the path '''
+        self.pos_prev = self.pos
         self.pos = pos
 
     def get_path_x(self, i):

@@ -98,13 +98,13 @@ class Model:
             dts += vel / dist
 
         self.set_dt(dts / (self.get_num_active() + 1))
-        self.time += self.dt
+        self.time += self.dt  # not used
 
         # Advance r(t) to r + dt using terms up to a(t)
         for particle in self.particles:
             if not particle.active:
                 continue
-            particle.advance_pos(self.time)
+            particle.advance_pos(self.dt)
 
         for particle in self.particles:
             if not particle.active:
@@ -115,7 +115,7 @@ class Model:
             particle.estimate_jerk(self.dt)
             # first compute v(t + dt) and then compute r(t + dt)
             # (r uses v(t + dt) and a(t + dt) and j(t + 0.5 dt))
-            particle.compute_pos(self.time)
+            particle.compute_pos(self.dt)
 
     def update_particle(self, particle):
         '''

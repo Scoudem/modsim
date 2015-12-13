@@ -161,7 +161,9 @@ class Model:
             item[0].center = item[1].get_path_at(i)
             item[0].set_visible(True)
 
-            sys.stdout.write('\rTimestep {}/{}...'.format(i + 1, self.timestep))
+            sys.stdout.write('\rTimestep {}/{}...'.format(
+                i + 1, self.timestep)
+            )
         return self.circles
 
     def __str__(self):

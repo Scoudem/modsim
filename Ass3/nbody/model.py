@@ -155,6 +155,7 @@ class Model:
                     p1.mass += p2.mass
                     p2.deathtime = self.timestep
                     p2.active = False
+                continue
 
             dists += dist
 

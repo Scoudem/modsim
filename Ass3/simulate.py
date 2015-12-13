@@ -20,7 +20,7 @@ if __name__ == '__main__':
     # # model.add_particle(10 ** 2, [-30, -50], [0.05, 0.03])
 
     model.set_dt(0.1)
-    model.set_size((-30, 30))
+    model.set_size((-50, 50))
 
     model.generate_random(3)
 

@@ -52,6 +52,13 @@ class Model:
         '''
         self.particles.remove(index)
 
+    def get_num_active(self):
+        i = 0
+        for particle in self.particles:
+            if particle.active:
+                i += 1
+        return i
+
     def next_n_timesteps(self, timesteps):
         '''
         '''
@@ -79,18 +86,29 @@ class Model:
         # this computes a(t) and dt
         dts = 0
         for particle in self.particles:
+            if not particle.active:
+                continue
+
             dist = self.update_particle(particle)
+            if dist <= 0:
+                continue
+
             vel = np.mean(np.abs(particle.vel))
+
             dts += vel / dist
 
-        self.set_dt(dts / (len(self.particles) + 1))
+        self.set_dt(dts / (self.get_num_active() + 1))
         self.time += self.dt
 
         # Advance r(t) to r + dt using terms up to a(t)
         for particle in self.particles:
+            if not particle.active:
+                continue
             particle.advance_pos(self.time)
 
         for particle in self.particles:
+            if not particle.active:
+                continue
             # compute a(t + dt) and set acc_prev to a(t)
             self.compute_a(particle, True)
             # estimate j(t + 0.5 dt)
@@ -124,10 +142,20 @@ class Model:
 
         a = np.zeros(2)
         for p2 in self.particles:
-            if p1 is p2:
+            if p1 is p2 or not p2.active:
                 continue
 
             dist = distance.euclidean(p2.pos, p1.pos)
+            if dist <= 1:  # collision
+                if p1.mass < p2.mass:
+                    p2.mass += p1.mass
+                    p1.deathtime = self.timestep
+                    p1.active = False
+                else:
+                    p1.mass += p2.mass
+                    p2.deathtime = self.timestep
+                    p2.active = False
+
             dists += dist
 
             upper = self.G * p2.mass * (p2.pos - p1.pos)
@@ -157,9 +185,9 @@ class Model:
         fig = plt.figure()
         self.ax = plt.axes()
 
+        self.ax.axis('equal')
         self.ax.set_xlim(self.size, auto=autoscale)
         self.ax.set_ylim(self.size, auto=autoscale)
-        self.ax.axis('equal')
 
         # self.ax.axis('equal')
 
@@ -192,7 +220,13 @@ class Model:
     def animate(self, i):
         for item in zip(self.circles, self.particles):
             item[0].center = item[1].get_path_at(i)
-            item[0].set_visible(True)
+
+            if not item[1].active and i >= item[1].deathtime:
+                item[0].set_visible(False)
+            else:
+                item[0].set_visible(True)
+
+            item[0].set_radius(item[1].get_mass_plotable())
 
             sys.stdout.write('\rTimestep {}/{}...'.format(
                 i + 1, self.timestep)

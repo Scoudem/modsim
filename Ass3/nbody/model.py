@@ -58,7 +58,9 @@ class Model:
             timesteps, len(self.particles)
         ))
         for t in range(timesteps):
-            sys.stdout.write('\r{}/{}. dt={}...'.format(t + 1, timesteps, self.dt))
+            sys.stdout.write('\r{}/{}. dt={}...'.format(
+                t + 1, timesteps, self.dt
+            ))
             self.next_timestep()
         print(' done.\nPlotting...')
 
@@ -77,9 +79,6 @@ class Model:
             dist = self.update_particle(particle)
             vel = np.mean(np.abs(particle.vel))
             dts += vel / dist
-            # print 'Particle state:\n - dist: {}\n - vel: {}\n - dts: {}'.format(dist, vel, dts)
-
-        # print dts
 
         self.set_dt(dts / (len(self.particles) + 1))
 
@@ -128,8 +127,11 @@ class Model:
 
     def generate_random(self, n):
         for i in range(n):
-            mass = 10 ** rd.randint(1, 20)
-            position = [rd.randint(-100, 100), rd.randint(-100, 100)]
+            mass = 10 ** (10 + rd.uniform(-2, 2))
+            position = [
+                rd.randint(self.size[0], self.size[1]),
+                rd.randint(self.size[0], self.size[1])
+            ]
             velocity = [rd.uniform(-1, 1), rd.uniform(-1, 1)]
             self.add_particle(mass, position, velocity)
             print self.particles[-1]
@@ -144,6 +146,7 @@ class Model:
 
         self.ax.set_xlim(self.size, auto=autoscale)
         self.ax.set_ylim(self.size, auto=autoscale)
+        self.ax.axis('equal')
 
         # self.ax.axis('equal')
 
